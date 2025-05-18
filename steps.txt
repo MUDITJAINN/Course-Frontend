@@ -1,0 +1,13 @@
+-wrap app in browser router in main.jsx  
+-create pages needed 
+-implement the routes and route with path and element in app.jsx 
+-create div accordingly from top to bottom approach then put classname and write tailwind css accordingly 
+-use link tag instead of button if want to redirect to page 
+-get social media icons from the react-icons website and search the desire icon and implement the icon tag with its import from the website 
+-get fonts from google fonts get embedded code for the fonts and paste in global index.css and implemented their for header, body, footer different for each section 
+-using axios to fetch data from backed images for the courses slider on the landing page with try catch error handling  
+also fetching function put in useEffect so data fetch on rendering and only once with empty dependency array 
+-using cors so we can works on frontend and backend as on different ports - for security backend will allow only defined port req from frontend - implement on backend 
+-getting slider from react-slick website 
+-using use state to store the data in variable then show also set credentials true on both frontend and backend to access token etc 
+-in database network access added ip address to allow all ip 
