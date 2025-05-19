@@ -11,3 +11,6 @@ also fetching function put in useEffect so data fetch on rendering and only once
 -getting slider from react-slick website 
 -using use state to store the data in variable then show also set credentials true on both frontend and backend to access token etc 
 -in database network access added ip address to allow all IP
+-using react hot toast for the toast 
+-storing token when login in localstorage of browser to check if logged in - until token is there login set true else false
+-
