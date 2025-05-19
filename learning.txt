@@ -1,4 +1,23 @@
-e = event object
+-e = event object
 It is passed by the browser or React automatically to your event handler.
 Contains useful info about the event like the element (e.target) and its value (e.target.value).
+
+-functional chaining - Functional chaining is a programming technique where multiple functions or methods are called in sequence, 
+one after another, often on the same object or return value. This is common in JavaScript and other functional-style languages 
+and is used to write clean, readable, and concise code. 
+const result = str.trim().toLowerCase().replace(/\s+/g, "-");
+vs
+let temp = str.trim();
+temp = temp.toLowerCase();
+const result = temp.replace(/\s+/g, "-");
+
+-optional chaining - user.account?.email   -   if email undefined no error due to ?
+
+-empty object passed in post request
+
+- backtick -
+| Quotes         | Features          | Multi-line | Interpolation |
+| -------------- | ----------------- | ---------- | ------------- |
+| `' '` or `" "` | Regular strings   | ❌          | ❌             |
+| `` ` ` ``      | Template literals | ✅          | ✅             |
 
