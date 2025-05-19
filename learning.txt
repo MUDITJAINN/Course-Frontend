@@ -1,0 +1,4 @@
+e = event object
+It is passed by the browser or React automatically to your event handler.
+Contains useful info about the event like the element (e.target) and its value (e.target.value).
+

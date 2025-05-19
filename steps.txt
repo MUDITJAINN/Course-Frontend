@@ -10,4 +10,4 @@ also fetching function put in useEffect so data fetch on rendering and only once
 -using cors so we can works on frontend and backend as on different ports - for security backend will allow only defined port req from frontend - implement on backend 
 -getting slider from react-slick website 
 -using use state to store the data in variable then show also set credentials true on both frontend and backend to access token etc 
--in database network access added ip address to allow all ip 
+-in database network access added ip address to allow all IP
