@@ -6,6 +6,9 @@ import Signup from "./components/Signup";
 import Courses from "./components/Courses";
 import Buy from "./components/Buy";
 import Purchases from "./components/Purchases";
+import TermsAndConditions from "./components/TermsAndConditions";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import RefundAndCancellation from "./components/RefundAndCancellation";
 function App() {
   return (
     <div>
@@ -17,6 +20,9 @@ function App() {
         <Route path="/buy/:courseId" element={<Buy />} />
         <Route path="/purchases" element={<Purchases/>}
         />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/refund" element={<RefundAndCancellation />} />
       </Routes>
     </div>
   );

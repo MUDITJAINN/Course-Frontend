@@ -102,7 +102,7 @@ function Home() {
               className="w-7 h-7 md:w-10 md:h-10 rounded-full"
             />
             <h1 className="md:text-2xl text-orange-500 font-bold">
-              CourseHaven
+              Programming With Mudit
             </h1>
           </div>
           <div className="space-x-4">
@@ -135,7 +135,7 @@ function Home() {
         {/* Main section */}
         <section className="text-center py-20">
           <h1 className="text-4xl font-semibold text-orange-500">
-            CourseHaven
+            Programming With Mudit
           </h1>
 
           <br />
@@ -150,7 +150,7 @@ function Home() {
               Explore courses
             </Link>
             <Link
-              to={"https://www.youtube.com/learncodingofficial"}
+              to={"https://www.youtube.com/"}
               className="bg-white text-black  p-2 md:py-3 md:px-6 rounded font-semibold hover:bg-green-500 duration-300 hover:text-white"
             >
               Courses videos
@@ -191,7 +191,7 @@ function Home() {
               <div className="flex items-center space-x-2">
                 <img src={logo} alt="" className="w-10 h-10 rounded-full" />
                 <h1 className="text-2xl text-orange-500 font-bold">
-                  CourseHaven
+                  Programming With Mudit
                 </h1>
               </div>
               <div className="mt-3 ml-2 md:ml-8">
@@ -226,19 +226,19 @@ function Home() {
             </div>
             <div className="items-center mt-6 md:mt-0 flex flex-col">
               <h3 className="text-lg font-semibold mb-4">
-                copyrights &#169; 2024
+                copyrights &#169; 2025
               </h3>
-              <ul className=" space-y-2 text-center text-gray-400">
+              <ul className="space-y-2 text-center text-gray-400">
                 <li className="hover:text-white cursor-pointer duration-300">
-                  Terms & Conditions
+                    <Link to="/terms">Terms & Conditions</Link>
                 </li>
                 <li className="hover:text-white cursor-pointer duration-300">
-                  Privacy Policy
+                    <Link to="/privacy">Privacy Policy</Link>
                 </li>
                 <li className="hover:text-white cursor-pointer duration-300">
-                  Refund & Cancellation
+                    <Link to="/refund">Refund & Cancellation</Link>
                 </li>
-              </ul>
+                </ul>
             </div>
           </div>
         </footer>

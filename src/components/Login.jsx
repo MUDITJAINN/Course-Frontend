@@ -47,7 +47,7 @@ function Login() {
           <div className="flex items-center space-x-2">
             <img src={logo} alt="Logo" className="w-10 h-10 rounded-full" />
             <Link to={"/"} className="text-xl font-bold text-orange-500">
-              CourseHaven
+              Programming With Mudit
             </Link>
           </div>
           <div className="flex items-center space-x-4">
@@ -69,7 +69,7 @@ function Login() {
         {/* Login Form */}
         <div className="bg-gray-900 p-8 rounded-lg shadow-lg w-[500px] m-8 md:m-0 mt-20">
           <h2 className="text-2xl font-bold mb-4 text-center">
-            Welcome to <span className="text-orange-500">CourseHaven</span>
+            Welcome to <span className="text-orange-500">Programming With Mudit</span>
           </h2>
           <p className="text-center text-gray-400 mb-6">
             Log in to access paid content!
