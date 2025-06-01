@@ -9,7 +9,7 @@ import { IoMdSettings } from "react-icons/io";
 import { IoLogIn, IoLogOut } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { HiMenu, HiX } from "react-icons/hi"; // Import menu and close icons
-import logo from "../assets/logo.webp";
+import logo from "../assets/Programmingwithmudit.png";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";

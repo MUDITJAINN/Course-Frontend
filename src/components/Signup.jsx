@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.webp";
+import logo from "../assets/Programmingwithmudit.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../utils/utils";
