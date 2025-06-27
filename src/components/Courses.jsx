@@ -100,7 +100,7 @@ function Courses() {
                 <FaDiscourse className="mr-2" /> Courses
               </a>
             </li>
-            <li className="mb-4">
+            {/* <li className="mb-4">
               <a href="/purchases" className="flex items-center">
                 <FaDownload className="mr-2" /> Purchases
               </a>
@@ -109,7 +109,7 @@ function Courses() {
               <a href="#" className="flex items-center">
                 <IoMdSettings className="mr-2" /> Settings
               </a>
-            </li>
+            </li> */}
             <li>
               {isLoggedIn ? (
                 <Link to={"/"}
@@ -172,14 +172,14 @@ function Courses() {
                   />
                   <h2 className="font-bold text-lg mb-2">{course.title}</h2>
                   <p className="text-gray-600 mb-4">
-                    {course.description.length > 100
-                      ? `${course.description.slice(0, 100)}...`
+                    {course.description.length > 500
+                      ? `${course.description.slice(0, 500)}...`
                       : course.description}
                   </p>
                   <div className="flex justify-between items-center mb-4">
                     <span className="font-bold text-xl">
                       ₹{course.price}{" "}
-                      <span className="text-gray-500 line-through">5999</span>
+                      {/* // <span className="text-gray-500 line-through">5999</span> */}
                     </span>
                     <span className="text-green-600">20% off</span>
                   </div>

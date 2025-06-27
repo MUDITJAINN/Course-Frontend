@@ -11,7 +11,7 @@ import Slider from "react-slick";
 import toast from "react-hot-toast";
 import { BACKEND_URL } from "../utils/utils";
 function Home() {
-  const [courses, setCourses] = useState([]);
+  // const [courses, setCourses] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // token
@@ -32,7 +32,7 @@ function Home() {
           withCredentials: true,
         });
         console.log(response.data.courses);
-        setCourses(response.data.courses);
+        // setCourses(response.data.courses);
       } catch (error) {
         console.log("error in fetchCourses ", error);
       }
@@ -55,41 +55,41 @@ function Home() {
     }
   };
 
-  var settings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    initialSlide: 0,
-    autoplay: true,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 2,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
+  // var settings = {
+  //   dots: true,
+  //   infinite: false,
+  //   speed: 500,
+  //   slidesToShow: 4,
+  //   slidesToScroll: 1,
+  //   initialSlide: 0,
+  //   autoplay: true,
+  //   responsive: [
+  //     {
+  //       breakpoint: 1024,
+  //       settings: {
+  //         slidesToShow: 3,
+  //         slidesToScroll: 2,
+  //         infinite: true,
+  //         dots: true,
+  //       },
+  //     },
+  //     {
+  //       breakpoint: 600,
+  //       settings: {
+  //         slidesToShow: 2,
+  //         slidesToScroll: 2,
+  //         initialSlide: 2,
+  //       },
+  //     },
+  //     {
+  //       breakpoint: 480,
+  //       settings: {
+  //         slidesToShow: 1,
+  //         slidesToScroll: 1,
+  //       },
+  //     },
+  //   ],
+  // };
 
   return (
     <div className="bg-gradient-to-r from-black to-blue-950 ">
@@ -159,7 +159,7 @@ function Home() {
           </div>
         </section>
         <section className="p-10">
-          <Slider className="" {...settings}>
+          {/* <Slider className="" {...settings}>
             {courses.map((course) => (
               <div key={course._id} className="p-4">
                 <div className="relative flex-shrink-0 w-92 transition-transform duration-300 transform hover:scale-105">
@@ -181,7 +181,7 @@ function Home() {
                 </div>
               </div>
             ))}
-          </Slider>
+          </Slider> */}
         </section>
 
         <hr />
@@ -211,7 +211,7 @@ function Home() {
               </div>
             </div>
 
-            <div className="items-center mt-6 md:mt-0 flex flex-col">
+            {/* <div className="items-center mt-6 md:mt-0 flex flex-col">
               <h3 className="text-lg font-semibold md:mb-4">connects</h3>
               <ul className=" space-y-2 text-gray-400">
                 <li className="hover:text-white cursor-pointer duration-300">
@@ -224,7 +224,7 @@ function Home() {
                   Github- learn coding
                 </li>
               </ul>
-            </div>
+            </div> */}
             <div className="items-center mt-6 md:mt-0 flex flex-col">
               <h3 className="text-lg font-semibold mb-4">
                 copyrights &#169; 2025
