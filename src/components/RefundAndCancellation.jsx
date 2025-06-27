@@ -5,13 +5,13 @@ const RefundAndCancellation = () => {
     <div className="max-w-4xl mx-auto p-6 text-gray-800">
       <h1 className="text-3xl font-bold mb-4">Refund & Cancellation Policy</h1>
       <p className="mb-4">
-        At Programming with Mudit, we strive to provide the best learning experience. Please read our refund and cancellation policy below.
+        All payments made for classes at <strong>Programming with Mudit</strong> are final. We do not offer any refunds or accept cancellations once a payment has been successfully processed.
       </p>
       <ul className="list-disc ml-6 space-y-2">
-        <li>Refunds are only applicable within 7 days of course purchase.</li>
-        <li>No refunds will be granted if the course has been more than 50% completed.</li>
-        <li>To request a refund, please contact support with your order details.</li>
-        <li>We reserve the right to refuse refunds in cases of abuse or fraud.</li>
+        <li>No cancellations will be entertained after payment is completed.</li>
+        <li>No refunds will be issued under any circumstances.</li>
+        <li>By enrolling, you agree to this no refund, no cancellation policy.</li>
+        <li>Ensure you review the course details carefully before making payment.</li>
       </ul>
     </div>
   );
