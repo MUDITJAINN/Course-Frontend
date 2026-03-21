@@ -9,6 +9,7 @@ import Purchases from "./components/Purchases";
 import TermsAndConditions from "./components/TermsAndConditions";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import RefundAndCancellation from "./components/RefundAndCancellation";
+import Notes from "./components/Notes";
 function App() {
   return (
     <div>
@@ -19,6 +20,7 @@ function App() {
         <Route path="/courses" element={<Courses />} />
         <Route path="/buy/:courseId" element={<Buy />} />
         <Route path="/purchases" element={<Purchases/>}/>
+        <Route path="/notes" element={<Notes />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/refund" element={<RefundAndCancellation />} />

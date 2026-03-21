@@ -92,25 +92,25 @@ function Home() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-black to-blue-950 ">
-      <div className="h-[1250px] md:h-[1050px] text-white container mx-auto">
+    <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-black min-h-screen">
+      <div className="text-white container mx-auto px-4 md:px-6 pb-10">
         {/* Header */}
-        <header className="flex items-center justify-between p-6 ">
+        <header className="flex items-center justify-between py-6">
           <div className="flex items-center space-x-2">
             <img
               src={logo}
               alt=""
-              className="w-7 h-7 md:w-10 md:h-10 rounded-full"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full shadow-lg"
             />
             <h1 className="md:text-2xl text-orange-500 font-bold">
               Programming With Mudit
             </h1>
           </div>
-          <div className="space-x-4">
+          <div className="space-x-2 md:space-x-4">
             {isLoggedIn ? (
               <button
                 onClick={handleLogout}
-                className="bg-transparent text-white text-xs md:text-lg md:py-2 md:px-4 p-2 border border-white rounded"
+                className="bg-transparent text-white text-xs md:text-base md:py-2 md:px-4 p-2 border border-white/70 rounded-md hover:bg-white hover:text-black duration-300"
               >
                 Logout
               </button>
@@ -118,13 +118,13 @@ function Home() {
               <>
                 <Link
                   to={"/login"}
-                  className="bg-transparent text-white text-xs md:text-lg md:py-2 md:px-4 p-2 border border-white rounded"
+                  className="bg-transparent text-white text-xs md:text-base md:py-2 md:px-4 p-2 border border-white/70 rounded-md hover:bg-white hover:text-black duration-300"
                 >
                   Login
                 </Link>
                 <Link
                   to={"/signup"}
-                  className="bg-transparent text-white text-xs md:text-lg md:py-2 md:px-4 p-2 border border-white rounded"
+                  className="bg-transparent text-white text-xs md:text-base md:py-2 md:px-4 p-2 border border-white/70 rounded-md hover:bg-white hover:text-black duration-300"
                 >
                   Signup
                 </Link>
@@ -134,46 +134,51 @@ function Home() {
         </header>
 
         {/* Main section */}
-        <section className="text-center py-20">
-          <h1 className="text-4xl font-semibold text-orange-500">
+        <section className="text-center py-16 md:py-20">
+          <h1 className="text-4xl md:text-5xl font-bold text-orange-500 leading-tight">
             Programming With Mudit
           </h1>
 
-          <br />
-          <p className="text-gray-500">
+          <p className="text-gray-300 max-w-2xl mx-auto mt-5">
             Sharpen your skills with courses crafted by experts.
           </p>
-          <div className="space-x-4 mt-8">
+          <div className="mt-8 flex flex-wrap justify-center gap-3 md:gap-4">
             <Link
               to={"/courses"}
-              className="bg-green-500 text-white p-2 md:py-3 md:px-6 rounded font-semibold hover:bg-white duration-300 hover:text-black"
+              className="bg-green-500 text-white p-2 md:py-3 md:px-6 rounded-md font-semibold hover:bg-white duration-300 hover:text-black"
             >
-              Explore courses
+              Explore Courses
+            </Link>
+            <Link
+              to={"/notes"}
+              className="bg-purple-500 text-white p-2 md:py-3 md:px-6 rounded-md font-semibold hover:bg-white duration-300 hover:text-black"
+            >
+              Explore Notes
             </Link>
             <Link
               to={"https://www.youtube.com/channel/UClpI0dEe-QxQ0rp8LrNLjzg"}
-              className="bg-white text-black  p-2 md:py-3 md:px-6 rounded font-semibold hover:bg-green-500 duration-300 hover:text-white"
+              className="bg-white text-black p-2 md:py-3 md:px-6 rounded-md font-semibold hover:bg-green-500 duration-300 hover:text-white"
             >
-              Courses videos
+              Free Videos
             </Link>
           </div>
         </section>
-        <section className="p-10">
+        <section className="pb-8 md:pb-12">
           <Slider className="" {...settings}>
             {courses.map((course) => (
               <div key={course._id} className="p-4">
-                <div className="relative flex-shrink-0 w-92 transition-transform duration-300 transform hover:scale-105">
-                  <div className="bg-gray-900 rounded-lg overflow-hidden">
+                <div className="relative flex-shrink-0 transition-transform duration-300 transform hover:-translate-y-1">
+                  <div className="bg-slate-900/90 border border-white/10 rounded-xl overflow-hidden shadow-xl">
                     <img
-                      className="mt-4 h-32 w-full object-contain"
+                      className="mt-4 h-36 w-full object-contain"
                       src={course.image?.url}
                       alt=""
                     />
                     <div className="p-6 text-center">
-                      <h2 className="mb-4 text-xl font-bold text-white">
+                      <h2 className="mb-4 text-xl font-bold text-white line-clamp-1">
                         {course.title}
                       </h2>
-                      <Link to={`/buy/${course._id}`} className="mt-8 bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-blue-500 duration-300">
+                      <Link to={`/buy/${course._id}`} className="inline-block mt-2 bg-orange-500 text-white py-2 px-5 rounded-full hover:bg-blue-500 duration-300">
                         Enroll Now
                       </Link>
                     </div>
@@ -184,9 +189,9 @@ function Home() {
           </Slider>
         </section>
 
-        <hr />
+        <hr className="border-white/20" />
         {/* Footer */}
-        <footer className="my-12">
+        <footer className="mt-12">
           <div className="grid grid-cols-1 md:grid-cols-3">
             <div className="flex flex-col items-center md:items-start">
               <div className="flex items-center space-x-2">
@@ -198,13 +203,13 @@ function Home() {
               <div className="mt-3 ml-2 md:ml-8">
                 <p className="mb-2">Follow us</p>
                 <div className="flex space-x-4">
-                  <a href="">
+                  <a href="#" aria-label="Facebook">
                     <FaFacebook className="text-2xl hover:text-blue-400 duration-300" />
                   </a>
-                  <a href="">
+                  <a href="#" aria-label="Instagram">
                     <FaInstagram className="text-2xl hover:text-pink-600 duration-300" />
                   </a>
-                  <a href="">
+                  <a href="#" aria-label="Twitter">
                     <FaTwitter className="text-2xl hover:text-blue-600 duration-300" />
                   </a>
                 </div>
