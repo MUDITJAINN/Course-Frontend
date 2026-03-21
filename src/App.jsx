@@ -18,8 +18,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/buy/:courseId" element={<Buy />} />
-        <Route path="/purchases" element={<Purchases/>}
-        />
+        <Route path="/purchases" element={<Purchases/>}/>
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/refund" element={<RefundAndCancellation />} />
