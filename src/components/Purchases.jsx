@@ -1,8 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaDiscourse, FaDownload } from "react-icons/fa";
-import { IoMdSettings } from "react-icons/io";
+import { FaBook, FaDownload } from "react-icons/fa";
 import { IoLogIn, IoLogOut } from "react-icons/io5";
 import { RiHome2Fill } from "react-icons/ri";
 import { HiMenu, HiX } from "react-icons/hi"; // Icons for sidebar toggle
@@ -10,16 +9,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils"; // Import your backend URL
 
 function Purchases() {
-  const [purchases, setPurchase] = useState([]);
+  const [coursePurchases, setCoursePurchases] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar open state
 
   const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("user"));
   const token = user?.token; // using optional chaining to avoid app crashing
 
-  console.log("purchases: ", purchases);
+  console.log("coursePurchases: ", coursePurchases);
 
   // Token handling
   useEffect(() => {
@@ -45,7 +44,7 @@ function Purchases() {
           },
           withCredentials: true,
         });
-        setPurchase(response.data.courseData);
+        setCoursePurchases(response.data.courseData || []);
       } catch (error) {
         console.error("Failed to fetch purchase data:", error);
         setErrorMessage("Failed to fetch purchase data");
@@ -57,7 +56,7 @@ function Purchases() {
   // Logout
   const handleLogout = async () => {
     try {
-      const response = await axios.get(`http://localhost:4001/api/v1/user/logout`, {
+      const response = await axios.get(`${BACKEND_URL}/user/logout`, {
         withCredentials: true,
       });
       toast.success(response.data.message);
@@ -91,19 +90,14 @@ function Purchases() {
               </Link>
             </li>
             <li className="mb-4">
-              <Link to="/courses" className="flex items-center">
-                <FaDiscourse className="mr-2" /> Courses
+              <Link to="/notes" className="flex items-center">
+                <FaBook className="mr-2" /> Notes
               </Link>
             </li>
             <li className="mb-4">
               <a href="#" className="flex items-center text-blue-500">
-                <FaDownload className="mr-2" /> Purchases
+                <FaDownload className="mr-2" /> Course Purchases
               </a>
-            </li>
-            <li className="mb-4">
-              <Link to="/settings" className="flex items-center">
-                <IoMdSettings className="mr-2" /> Settings
-              </Link>
             </li>
             <li>
               {isLoggedIn ? (
@@ -147,12 +141,12 @@ function Purchases() {
           <div className="text-red-500 text-center mb-4">{errorMessage}</div>
         )}
 
-        {/* Render purchases */}
-        {purchases.length > 0 ? (
+        <h3 className="text-lg font-semibold mb-3">Course Purchases</h3>
+        {coursePurchases.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {purchases.map((purchase, index) => (
+            {coursePurchases.map((purchase, index) => (
               <div
-                key={index}
+                key={`course-${index}`}
                 className="bg-white rounded-lg shadow-md p-6 mb-6"
               >
                 <div className="flex flex-col items-center space-y-4">
@@ -172,7 +166,7 @@ function Purchases() {
                         : purchase.description}
                     </p>
                     <span className="text-green-700 font-semibold text-sm">
-                      ${purchase.price} only
+                      Rs. {purchase.price}
                     </span>
                   </div>
                 </div>
@@ -180,7 +174,7 @@ function Purchases() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500">You have no purchases yet.</p>
+          <p className="text-gray-500">No purchased courses yet.</p>
         )}
       </div>
     </div>

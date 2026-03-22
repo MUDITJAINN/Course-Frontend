@@ -1,64 +1,135 @@
-import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-
-const NOTES = [
-  {
-    id: "react-basics",
-    title: "React Basics Notes",
-    description:
-      "Components, props, state, hooks, routing, and beginner project notes.",
-    pages: 42,
-    price: 149,
-    previewImage: "/react.png",
-    downloadFile: "/notes/react-basics-notes.txt",
-  },
-  {
-    id: "DSA",
-    title: "DSA using Java Interview Notes",
-    description:
-      "Arrays, strings, linked list, recursion, trees, and interview revision notes.",
-    pages: 37,
-    price: 199,
-    previewImage: "/java.avif",
-    downloadFile: "/notes/DSA.pdf",
-  },
-  {
-    id: "gate-cs",
-    title: "GATE CS Notes",
-    description:
-      "Complete GATE CS quick revision notes for OS, DBMS, CN, TOC, and Aptitude.",
-    pages: 75,
-    price: 249,
-    previewImage: "/GATE.jpeg",
-    downloadFile: "/notes/gate-cs-notes.txt",
-  },
-];
-
-const PURCHASE_KEY = "notes-store-purchases";
+import axios from "axios";
+import React, { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { FaBook, FaDownload } from "react-icons/fa";
+import { HiMenu, HiX } from "react-icons/hi";
+import { IoMdSettings } from "react-icons/io";
+import { IoLogIn, IoLogOut } from "react-icons/io5";
+import { RiHome2Fill } from "react-icons/ri";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import logo from "../assets/Programmingwithmudit.png";
+import { BACKEND_URL } from "../utils/utils";
 
 function Notes() {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeView, setActiveView] = useState("store");
+  const [notes, setNotes] = useState([]);
   const [previewNote, setPreviewNote] = useState(null);
-  const [purchasedNotes, setPurchasedNotes] = useState(() => {
-    try {
-      const stored = localStorage.getItem(PURCHASE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [purchasedNotes, setPurchasedNotes] = useState([]);
+  const [loadingNoteId, setLoadingNoteId] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user?.token;
 
   const purchasedSet = useMemo(() => new Set(purchasedNotes), [purchasedNotes]);
 
-  const handleBuy = (note) => {
-    const confirmed = window.confirm(
-      `Buy "${note.title}" for Rs. ${note.price}? This demo unlocks it instantly.`
-    );
-    if (!confirmed) return;
+  const fetchNotes = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/notes/all`, {
+        withCredentials: true,
+      });
+      setNotes(response.data.notes || []);
+    } catch (error) {
+      toast.error("Failed to load notes");
+    }
+  };
 
-    if (!purchasedSet.has(note.id)) {
-      const next = [...purchasedNotes, note.id];
-      setPurchasedNotes(next);
-      localStorage.setItem(PURCHASE_KEY, JSON.stringify(next));
+  const fetchPurchasedNotes = async () => {
+    if (!token) return;
+    try {
+      // Fetch purchased note IDs for this logged-in user only.
+      const response = await axios.get(`${BACKEND_URL}/notes/my-purchased`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+      setPurchasedNotes(response.data.noteIds || []);
+    } catch (error) {
+      console.log("Error in fetchPurchasedNotes", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  useEffect(() => {
+    fetchPurchasedNotes();
+  }, [token]);
+
+  useEffect(() => {
+    setIsLoggedIn(!!token);
+  }, [token]);
+
+  useEffect(() => {
+    // On return from PhonePe, frontend receives noteId + transactionId in URL.
+    // We verify on backend before unlocking anything on UI.
+    const noteId = searchParams.get("noteId");
+    const merchantOrderId =
+      searchParams.get("merchantOrderId") || searchParams.get("transactionId");
+    if (!noteId || !merchantOrderId || !token) return;
+
+    const verifyPayment = async () => {
+      try {
+        await axios.get(
+          `${BACKEND_URL}/notes/verify-payment?noteId=${encodeURIComponent(
+            noteId
+          )}&merchantOrderId=${encodeURIComponent(merchantOrderId)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          }
+        );
+        toast.success("Payment successful. Notes unlocked.");
+        fetchPurchasedNotes();
+      } catch (error) {
+        toast.error(error?.response?.data?.errors || "Payment verification failed");
+      } finally {
+        setSearchParams({});
+      }
+    };
+
+    verifyPayment();
+  }, [searchParams, token, setSearchParams]);
+
+  const handleBuy = async (note) => {
+    if (!token) {
+      toast.error("Please login to buy notes");
+      navigate("/login");
+      return;
+    }
+
+    setLoadingNoteId(note._id);
+    try {
+      // Backend creates PhonePe transaction and returns redirect URL.
+      const response = await axios.post(
+        `${BACKEND_URL}/notes/create-payment/${encodeURIComponent(note._id)}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      const paymentUrl = response?.data?.paymentUrl;
+      if (!paymentUrl) {
+        toast.error("Payment URL not found");
+        return;
+      }
+
+      // Redirect user to PhonePe hosted payment page.
+      window.location.href = paymentUrl;
+    } catch (error) {
+      toast.error(error?.response?.data?.errors || "Could not initiate payment");
+    } finally {
+      setLoadingNoteId(null);
     }
   };
 
@@ -66,107 +137,212 @@ function Notes() {
     window.alert("Contact email: jainmuditt@gmail.com");
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/user/logout`, {
+        withCredentials: true,
+      });
+      toast.success(response.data.message);
+      localStorage.removeItem("user");
+      navigate("/login");
+    } catch (error) {
+      toast.error(error?.response?.data?.errors || "Error in logging out");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Notes Store</h1>
-            <p className="text-gray-600 mt-1">
-              First page preview is visible. Buy to unlock full download access.
-            </p>
-          </div>
-          <Link
-            to="/courses"
-            className="bg-gray-900 text-white px-4 py-2 rounded-md w-fit hover:bg-gray-700 duration-300"
-          >
-            Back to Courses
-          </Link>
+    <div className="flex min-h-screen bg-gray-100">
+      <button
+        className="md:hidden fixed top-4 left-4 z-20 text-3xl text-gray-800"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+      >
+        {isSidebarOpen ? <HiX /> : <HiMenu />}
+      </button>
+
+      <aside
+        className={`fixed top-0 left-0 h-screen bg-gray-100 w-64 p-5 transform z-10 transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 md:static`}
+      >
+        <div className="flex items-center mb-10 mt-10 md:mt-0">
+          <img src={logo} alt="Profile" className="rounded-full h-12 w-12" />
         </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          {NOTES.map((note) => {
-            const isPurchased = purchasedSet.has(note.id);
-            return (
-              <div
-                key={note.id}
-                className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+        <nav>
+          <ul>
+            <li className="mb-4">
+              <Link to="/" className="flex items-center">
+                <RiHome2Fill className="mr-2" /> Home
+              </Link>
+            </li>
+            <li className="mb-4">
+              <button
+                type="button"
+                onClick={() => setActiveView("store")}
+                className={`flex items-center ${
+                  activeView === "store" ? "text-blue-500" : ""
+                }`}
               >
-                <div className="relative">
-                  <img
-                    src={note.previewImage}
-                    alt={`${note.title} first page preview`}
-                    className="w-full h-56 object-cover"
-                  />
-                  <span className="absolute top-3 left-3 bg-black/80 text-white text-xs px-3 py-1 rounded-full">
-                    First page preview
-                  </span>
+                <FaBook className="mr-2" /> Notes
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
+                type="button"
+                onClick={() => setActiveView("purchases")}
+                className={`flex items-center ${
+                  activeView === "purchases" ? "text-blue-500" : ""
+                }`}
+              >
+                <FaDownload className="mr-2" /> Notes Purchases
+              </button>
+            </li>
+            <li className="mb-4">
+              <a href="#" className="flex items-center">
+                <IoMdSettings className="mr-2" /> Settings
+              </a>
+            </li>
+            <li>
+              {!isLoggedIn && (
+                <Link to="/login" className="flex items-center">
+                  <IoLogIn className="mr-2" /> Login
+                </Link>
+              )}
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div className="w-full ml-0 py-10 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {activeView === "purchases" ? "My Notes Purchases" : "Notes Store"}
+              </h1>
+              <p className="text-gray-600 mt-1">
+                {activeView === "purchases"
+                  ? "View all notes purchased by your account."
+                  : "First page preview is visible. Buy to unlock full download access."}
+              </p>
+            </div>
+          </div>
+          {activeView === "purchases" ? (
+            <div>
+              {notes.filter((note) => purchasedSet.has(note._id)).length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-3">
+                  {notes
+                    .filter((note) => purchasedSet.has(note._id))
+                    .map((note) => (
+                      <div
+                        key={`purchased-${note._id}`}
+                        className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+                      >
+                        <h4 className="font-semibold text-gray-900">{note.title}</h4>
+                        <p className="text-sm text-gray-600 mt-1">{note.pages} pages</p>
+                        <a
+                          href={note.downloadFileUrl}
+                          download
+                          className="inline-block mt-3 px-3 py-1.5 rounded-md bg-green-600 text-white hover:bg-green-700"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    ))}
                 </div>
+              ) : (
+                <p className="text-gray-500">No purchased notes yet.</p>
+              )}
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {notes.map((note) => {
+                const isPurchased = purchasedSet.has(note._id);
+                return (
+                  <div
+                    key={note._id}
+                    className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+                  >
+                    <div className="relative">
+                      <img
+                        src={note.previewImageUrl}
+                        alt={`${note.title} first page preview`}
+                        className="w-full h-56 object-cover"
+                      />
+                      <span className="absolute top-3 left-3 bg-black/80 text-white text-xs px-3 py-1 rounded-full">
+                        First page preview
+                      </span>
+                    </div>
 
-                <div className="p-5">
-                  <h2 className="text-xl font-semibold text-gray-900">{note.title}</h2>
-                  <p className="text-gray-600 mt-2">{note.description}</p>
-                  <div className="mt-4 text-sm text-gray-700 space-y-1">
-                    <p>
-                      <span className="font-medium">Pages:</span> {note.pages}
-                    </p>
-                    <p>
-                      <span className="font-medium">Price:</span> Rs. {note.price}
-                    </p>
-                  </div>
+                    <div className="p-5">
+                      <h2 className="text-xl font-semibold text-gray-900">{note.title}</h2>
+                      <p className="text-gray-600 mt-2">{note.description}</p>
+                      <div className="mt-4 text-sm text-gray-700 space-y-1">
+                        <p>
+                          <span className="font-medium">Pages:</span> {note.pages}
+                        </p>
+                        <p>
+                          <span className="font-medium">Price:</span> Rs. {note.price}
+                        </p>
+                      </div>
 
-                  <div className="mt-5 flex flex-wrap gap-3">
+                      <div className="mt-5 flex flex-wrap gap-3">
                     <button
                       onClick={() => handleBuy(note)}
-                      disabled={isPurchased}
+                      disabled={isPurchased || loadingNoteId === note._id}
                       className={`px-4 py-2 rounded-md text-white ${
-                        isPurchased
+                        isPurchased || loadingNoteId === note._id
                           ? "bg-gray-500 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-700"
                       }`}
                     >
-                      {isPurchased ? "Purchased" : "Buy & Unlock"}
+                      {isPurchased
+                        ? "Purchased"
+                        : loadingNoteId === note._id
+                        ? "Processing..."
+                        : "Buy & Unlock"}
                     </button>
 
-                    <a
-                      href={isPurchased ? note.downloadFile : "#"}
-                      download
-                      className={`px-4 py-2 rounded-md text-white ${
-                        isPurchased
-                          ? "bg-green-600 hover:bg-green-700"
-                          : "bg-green-300 pointer-events-none"
-                      }`}
-                    >
-                      Download Notes
-                    </a>
+                        <a
+                          href={isPurchased ? note.downloadFileUrl : "#"}
+                          download
+                          className={`px-4 py-2 rounded-md text-white ${
+                            isPurchased
+                              ? "bg-green-600 hover:bg-green-700"
+                              : "bg-green-300 pointer-events-none"
+                          }`}
+                        >
+                          Download Notes
+                        </a>
 
-                    <button
-                      type="button"
-                      onClick={handleShowEmail}
-                      className="px-4 py-2 rounded-md bg-black text-white hover:bg-gray-800"
-                    >
-                      Contact to Send Manually
-                    </button>
-                    {note.id === "DSA" && (
-                      <button
-                        type="button"
-                        onClick={() => setPreviewNote(note)}
-                        className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
-                      >
-                        Preview First 2 Pages
-                      </button>
-                    )}
+                        <button
+                          type="button"
+                          onClick={handleShowEmail}
+                          className="px-4 py-2 rounded-md bg-black text-white hover:bg-gray-800"
+                        >
+                          Contact to Send Manually
+                        </button>
+                        {note.downloadFileUrl?.toLowerCase().endsWith(".pdf") && (
+                          <button
+                            type="button"
+                            onClick={() => setPreviewNote(note)}
+                            className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
+                          >
+                            Preview First 2 Pages
+                          </button>
+                        )}
+                      </div>
+
+                      <p className="mt-4 text-sm text-teal-700">
+                        {isPurchased
+                          ? "Access unlocked. You can download now."
+                          : "Preview only. Purchase to unlock complete notes."}
+                      </p>
+                    </div>
                   </div>
-
-                  <p className="mt-4 text-sm text-teal-700">
-                    {isPurchased
-                      ? "Access unlocked. You can download now."
-                      : "Preview only. Purchase to unlock complete notes."}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
       {previewNote && (
@@ -190,12 +366,12 @@ function Notes() {
             <div className="grid gap-4 md:grid-cols-2">
               <iframe
                 title="DSA page 1 preview"
-                src={`${previewNote.downloadFile}#page=1&toolbar=0&navpanes=0&scrollbar=0`}
+                src={`${previewNote.downloadFileUrl}#page=1&toolbar=0&navpanes=0&scrollbar=0`}
                 className="w-full h-[70vh] border rounded-md pointer-events-none"
               />
               <iframe
                 title="DSA page 2 preview"
-                src={`${previewNote.downloadFile}#page=2&toolbar=0&navpanes=0&scrollbar=0`}
+                src={`${previewNote.downloadFileUrl}#page=2&toolbar=0&navpanes=0&scrollbar=0`}
                 className="w-full h-[70vh] border rounded-md pointer-events-none"
               />
             </div>

@@ -3,15 +3,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios for API call
 import { FaCircleUser } from "react-icons/fa6";
 import { RiHome2Fill } from "react-icons/ri";
-import { FaDiscourse } from "react-icons/fa";
-import { FaDownload } from "react-icons/fa6";
+import { FaDiscourse, FaDownload } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
-import { IoLogIn, IoLogOut } from "react-icons/io5";
+import { IoLogIn } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { HiMenu, HiX } from "react-icons/hi"; // Import menu and close icons
 import logo from "../assets/Programmingwithmudit.png";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
 
 function Courses() {
@@ -19,6 +18,9 @@ function Courses() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to toggle sidebar
+  const [activeView, setActiveView] = useState("store"); // "store" | "purchases"
+  const [coursePurchases, setCoursePurchases] = useState([]);
+  const navigate = useNavigate();
 
   console.log("courses: ", courses);
 
@@ -49,20 +51,24 @@ function Courses() {
     fetchCourses();
   }, []);
 
-  // Logout
-  const handleLogout = async () => {
-    try {
-      const response = await axios.get(`${BACKEND_URL}/user/logout`, {
-        withCredentials: true,
-      });
-      toast.success(response.data.message);
-      localStorage.removeItem("user");
-      setIsLoggedIn(false);
-    } catch (error) {
-      console.log("Error in logging out ", error);
-      toast.error(error.response.data.errors || "Error in logging out");
-    }
-  };
+  // Fetch course purchases for current user (for internal purchases tab)
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.token;
+    if (!token) return;
+    const fetchPurchases = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/user/purchases`, {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        });
+        setCoursePurchases(response.data.courseData || []);
+      } catch (error) {
+        console.log("Failed to fetch course purchases", error);
+      }
+    };
+    fetchPurchases();
+  }, []);
 
   // Toggle sidebar for mobile devices
   const toggleSidebar = () => {
@@ -91,19 +97,27 @@ function Courses() {
         <nav>
           <ul>
             <li className="mb-4">
-              <a href="/" className="flex items-center">
+              <Link to="/" className="flex items-center">
                 <RiHome2Fill className="mr-2" /> Home
-              </a>
+              </Link>
             </li>
             <li className="mb-4">
-              <a href="#" className="flex items-center text-blue-500">
+              <button
+                type="button"
+                onClick={() => setActiveView("store")}
+                className={`flex items-center ${activeView === "store" ? "text-blue-500" : ""}`}
+              >
                 <FaDiscourse className="mr-2" /> Courses
-              </a>
+              </button>
             </li>
             <li className="mb-4">
-              <a href="/purchases" className="flex items-center">
-                <FaDownload className="mr-2" /> Purchases
-              </a>
+              <button
+                type="button"
+                onClick={() => setActiveView("purchases")}
+                className={`flex items-center ${activeView === "purchases" ? "text-blue-500" : ""}`}
+              >
+                <FaDownload className="mr-2" /> Course Purchases
+              </button>
             </li>
             <li className="mb-4">
               <a href="#" className="flex items-center">
@@ -111,15 +125,7 @@ function Courses() {
               </a>
             </li>
             <li>
-              {isLoggedIn ? (
-                <Link to={"/"}
-                  
-                  className="flex items-center"
-                  onClick={handleLogout}
-                >
-                  <IoLogOut className="mr-2" /> Logout
-                </Link>
-              ) : (
+              {!isLoggedIn && (
                 <Link to={"/login"} className="flex items-center">
                   <IoLogIn className="mr-2" /> Login
                 </Link>
@@ -130,72 +136,110 @@ function Courses() {
       </aside>
 
       {/* Main content */}
-      <main className="ml-0 md:ml-64 w-full bg-white p-10">
-        <header className="flex justify-between items-center mb-10">
-          <h1 className="text-xl font-bold">Courses</h1>
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center">
-              <input
-                type="text"
-                placeholder="Type here to search..."
-                className="border border-gray-300 rounded-l-full px-4 py-2 h-10 focus:outline-none"
-              />
-              <button className="h-10 border border-gray-300 rounded-r-full px-4 flex items-center justify-center">
-                <FiSearch className="text-xl text-gray-600" />
-              </button>
-            </div>
-
-            <FaCircleUser className="text-4xl text-blue-600" />
-          </div>
-        </header>
-
-        {/* Vertically Scrollable Courses Section */}
-        <div className="overflow-y-auto h-[75vh]">
-          {loading ? (
-            <p className="text-center text-gray-500">Loading...</p>
-          ) : courses.length === 0 ? (
-            // Check if courses array is empty
-            <p className="text-center text-gray-500">
-              No course posted yet by admin
-            </p>
-          ) : (
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {courses.map((course) => (
-                <div
-                  key={course._id}
-                  className="border border-gray-200 rounded-lg p-4 shadow-sm"
-                >
-                  <img
-                    src={course.image?.url}
-                    alt={course.title}
-                    className="rounded mb-4"
-                  />
-                  <h2 className="font-bold text-lg mb-2">{course.title}</h2>
-                  <p className="text-gray-600 mb-4">
-                    {course.description.length > 500
-                      ? `${course.description.slice(0, 500)}...`
-                      : course.description}
-                  </p>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="font-bold text-xl">
-                      ₹{course.price}{" "}
-                      {/* // <span className="text-gray-500 line-through">5999</span> */}
-                    </span>
-                    <span className="text-green-600">20% off</span>
-                  </div>
-
-                  {/* Buy page */}
-                  <Link
-                    to={`/buy/${course._id}`} // Pass courseId in URL
-                    className="bg-orange-500 w-full text-white px-4 py-2 rounded-lg hover:bg-blue-900 duration-300"
-                  >
-                    Buy Now
-                  </Link>
+      <main className="ml-0 w-full bg-white p-10">
+        {activeView === "purchases" ? (
+          <>
+            <header className="flex justify-between items-center mb-10">
+              <h1 className="text-xl font-bold">My Course Purchases</h1>
+            </header>
+            <div className="overflow-y-auto h-[75vh]">
+              {coursePurchases.length === 0 ? (
+                <p className="text-center text-gray-500">No purchased courses yet.</p>
+              ) : (
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {coursePurchases.map((course, idx) => (
+                    <div
+                      key={`p-${course._id}-${idx}`}
+                      className="border border-gray-200 rounded-lg p-4 shadow-sm"
+                    >
+                      <img
+                        src={course.image?.url}
+                        alt={course.title}
+                        className="rounded mb-4"
+                      />
+                      <h2 className="font-bold text-lg mb-2">{course.title}</h2>
+                      <p className="text-gray-600 mb-4">
+                        {course.description.length > 500
+                          ? `${course.description.slice(0, 500)}...`
+                          : course.description}
+                      </p>
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-xl">₹{course.price}</span>
+                        <span className="text-green-600">Purchased</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <>
+            <header className="flex justify-between items-center mb-10">
+              <h1 className="text-xl font-bold">Courses</h1>
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    placeholder="Type here to search..."
+                    className="border border-gray-300 rounded-l-full px-4 py-2 h-10 focus:outline-none"
+                  />
+                  <button className="h-10 border border-gray-300 rounded-r-full px-4 flex items-center justify-center">
+                    <FiSearch className="text-xl text-gray-600" />
+                  </button>
+                </div>
+
+                <FaCircleUser className="text-4xl text-blue-600" />
+              </div>
+            </header>
+
+            {/* Vertically Scrollable Courses Section */}
+            <div className="overflow-y-auto h-[75vh]">
+              {loading ? (
+                <p className="text-center text-gray-500">Loading...</p>
+              ) : courses.length === 0 ? (
+                <p className="text-center text-gray-500">
+                  No course posted yet by admin
+                </p>
+              ) : (
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {courses.map((course) => (
+                    <div
+                      key={course._id}
+                      className="border border-gray-200 rounded-lg p-4 shadow-sm"
+                    >
+                      <img
+                        src={course.image?.url}
+                        alt={course.title}
+                        className="rounded mb-4"
+                      />
+                      <h2 className="font-bold text-lg mb-2">{course.title}</h2>
+                      <p className="text-gray-600 mb-4">
+                        {course.description.length > 500
+                          ? `${course.description.slice(0, 500)}...`
+                          : course.description}
+                      </p>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="font-bold text-xl">
+                          ₹{course.price}{" "}
+                        </span>
+                        <span className="text-green-600">20% off</span>
+                      </div>
+
+                      {/* Buy page */}
+                      <Link
+                        to={`/buy/${course._id}`} // Pass courseId in URL
+                        className="bg-orange-500 w-full text-white px-4 py-2 rounded-lg hover:bg-blue-900 duration-300"
+                      >
+                        Buy Now
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
