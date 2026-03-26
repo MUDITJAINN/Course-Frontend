@@ -156,6 +156,12 @@ function Home() {
               Explore Notes
             </Link>
             <Link
+              to={"/services"}
+              className="bg-orange-500 text-white p-2 md:py-3 md:px-6 rounded-md font-semibold hover:bg-white duration-300 hover:text-black"
+            >
+              Explore Services
+            </Link>
+            <Link
               to={"https://www.youtube.com/channel/UClpI0dEe-QxQ0rp8LrNLjzg"}
               className="bg-white text-black p-2 md:py-3 md:px-6 rounded-md font-semibold hover:bg-green-500 duration-300 hover:text-white"
             >

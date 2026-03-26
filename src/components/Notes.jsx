@@ -52,6 +52,42 @@ function Notes() {
     }
   };
 
+  const downloadNote = async (note) => {
+    if (!token) {
+      toast.error("Please login to download");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/notes/download/${encodeURIComponent(note._id)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType: "blob",
+        }
+      );
+
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"] || "application/octet-stream",
+      });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = (note.title || "note").replace(/\s+/g, "_");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error(error?.response?.data?.errors || "Download failed");
+    }
+  };
+
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -239,13 +275,13 @@ function Notes() {
                       >
                         <h4 className="font-semibold text-gray-900">{note.title}</h4>
                         <p className="text-sm text-gray-600 mt-1">{note.pages} pages</p>
-                        <a
-                          href={note.downloadFileUrl}
-                          download
+                        <button
+                          type="button"
+                          onClick={() => downloadNote(note)}
                           className="inline-block mt-3 px-3 py-1.5 rounded-md bg-green-600 text-white hover:bg-green-700"
                         >
                           Download
-                        </a>
+                        </button>
                       </div>
                     ))}
                 </div>
@@ -302,17 +338,18 @@ function Notes() {
                         : "Buy & Unlock"}
                     </button>
 
-                        <a
-                          href={isPurchased ? note.downloadFileUrl : "#"}
-                          download
+                        <button
+                          type="button"
+                          disabled={!isPurchased}
+                          onClick={() => downloadNote(note)}
                           className={`px-4 py-2 rounded-md text-white ${
                             isPurchased
                               ? "bg-green-600 hover:bg-green-700"
-                              : "bg-green-300 pointer-events-none"
+                              : "bg-green-300 cursor-not-allowed"
                           }`}
                         >
                           Download Notes
-                        </a>
+                        </button>
 
                         <button
                           type="button"
@@ -366,12 +403,16 @@ function Notes() {
             <div className="grid gap-4 md:grid-cols-2">
               <iframe
                 title="DSA page 1 preview"
-                src={`${previewNote.downloadFileUrl}#page=1&toolbar=0&navpanes=0&scrollbar=0`}
+                src={`${BACKEND_URL}/notes/preview/${encodeURIComponent(
+                  previewNote._id
+                )}#page=1&toolbar=0&navpanes=0&scrollbar=0`}
                 className="w-full h-[70vh] border rounded-md pointer-events-none"
               />
               <iframe
                 title="DSA page 2 preview"
-                src={`${previewNote.downloadFileUrl}#page=2&toolbar=0&navpanes=0&scrollbar=0`}
+                src={`${BACKEND_URL}/notes/preview/${encodeURIComponent(
+                  previewNote._id
+                )}#page=2&toolbar=0&navpanes=0&scrollbar=0`}
                 className="w-full h-[70vh] border rounded-md pointer-events-none"
               />
             </div>
