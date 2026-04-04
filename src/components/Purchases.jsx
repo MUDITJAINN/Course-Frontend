@@ -10,15 +10,14 @@ import { BACKEND_URL } from "../utils/utils"; // Import your backend URL
 
 function Purchases() {
   const [coursePurchases, setCoursePurchases] = useState([]);
+  const [notesPurchases, setNotesPurchases] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar open state
 
   const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("user"));
-  const token = user?.token; // using optional chaining to avoid app crashing
-
-  console.log("coursePurchases: ", coursePurchases);
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const token = user?.token;
 
   // Token handling
   useEffect(() => {
@@ -34,8 +33,8 @@ function Purchases() {
     navigate("/login");
   }
 
-  // Fetch purchases
   useEffect(() => {
+    if (!token) return;
     const fetchPurchases = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/user/purchases`, {
@@ -45,13 +44,14 @@ function Purchases() {
           withCredentials: true,
         });
         setCoursePurchases(response.data.courseData || []);
+        setNotesPurchases(response.data.notesData || []);
       } catch (error) {
         console.error("Failed to fetch purchase data:", error);
         setErrorMessage("Failed to fetch purchase data");
       }
     };
     fetchPurchases();
-  }, []);
+  }, [token]);
 
   // Logout
   const handleLogout = async () => {
@@ -95,9 +95,9 @@ function Purchases() {
               </Link>
             </li>
             <li className="mb-4">
-              <a href="#" className="flex items-center text-blue-500">
-                <FaDownload className="mr-2" /> Course Purchases
-              </a>
+              <span className="flex items-center text-blue-500">
+                <FaDownload className="mr-2" /> My Purchases
+              </span>
             </li>
             <li>
               {isLoggedIn ? (
@@ -141,16 +141,15 @@ function Purchases() {
           <div className="text-red-500 text-center mb-4">{errorMessage}</div>
         )}
 
-        <h3 className="text-lg font-semibold mb-3">Course Purchases</h3>
+        <h3 className="text-lg font-semibold mb-3">Course purchases</h3>
         {coursePurchases.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
             {coursePurchases.map((purchase, index) => (
               <div
-                key={`course-${index}`}
+                key={`course-${purchase._id || index}`}
                 className="bg-white rounded-lg shadow-md p-6 mb-6"
               >
                 <div className="flex flex-col items-center space-y-4">
-                  {/* Course Image */}
                   <img
                     className="rounded-lg w-full h-48 object-cover"
                     src={
@@ -166,7 +165,7 @@ function Purchases() {
                         : purchase.description}
                     </p>
                     <span className="text-green-700 font-semibold text-sm">
-                      Rs. {purchase.price}
+                      Paid — ₹{purchase.price}
                     </span>
                   </div>
                 </div>
@@ -174,7 +173,31 @@ function Purchases() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500">No purchased courses yet.</p>
+          <p className="text-gray-500 mb-10">No purchased courses yet.</p>
+        )}
+
+        <h3 className="text-lg font-semibold mb-3">Notes purchases</h3>
+        {notesPurchases.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {notesPurchases.map((note, index) => (
+              <div
+                key={`note-${note._id || index}`}
+                className="bg-white rounded-lg shadow-md p-6 border border-gray-100"
+              >
+                <h3 className="text-lg font-bold text-gray-900">{note.title}</h3>
+                <p className="text-sm text-gray-600 mt-1">{note.pages} pages</p>
+                <p className="text-green-700 font-semibold text-sm mt-2">Paid — ₹{note.price}</p>
+                <Link
+                  to="/notes"
+                  className="inline-block mt-4 text-blue-600 hover:underline text-sm"
+                >
+                  Open in Notes →
+                </Link>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">No purchased notes yet.</p>
         )}
       </div>
     </div>

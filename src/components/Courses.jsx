@@ -20,6 +20,7 @@ function Courses() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to toggle sidebar
   const [activeView, setActiveView] = useState("store"); // "store" | "purchases"
   const [coursePurchases, setCoursePurchases] = useState([]);
+  const [purchasedCourseIds, setPurchasedCourseIds] = useState(() => new Set());
   const navigate = useNavigate();
 
   console.log("courses: ", courses);
@@ -51,24 +52,29 @@ function Courses() {
     fetchCourses();
   }, []);
 
-  // Fetch course purchases for current user (for internal purchases tab)
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user") || "null");
     const token = user?.token;
-    if (!token) return;
+    if (!token) {
+      setCoursePurchases([]);
+      setPurchasedCourseIds(new Set());
+      return;
+    }
     const fetchPurchases = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/user/purchases`, {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         });
-        setCoursePurchases(response.data.courseData || []);
+        const list = response.data.courseData || [];
+        setCoursePurchases(list);
+        setPurchasedCourseIds(new Set(list.map((c) => String(c._id))));
       } catch (error) {
         console.log("Failed to fetch course purchases", error);
       }
     };
     fetchPurchases();
-  }, []);
+  }, [isLoggedIn]);
 
   // Toggle sidebar for mobile devices
   const toggleSidebar = () => {
@@ -203,38 +209,51 @@ function Courses() {
                 </p>
               ) : (
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                  {courses.map((course) => (
-                    <div
-                      key={course._id}
-                      className="border border-gray-200 rounded-lg p-4 shadow-sm"
-                    >
-                      <img
-                        src={course.image?.url}
-                        alt={course.title}
-                        className="rounded mb-4"
-                      />
-                      <h2 className="font-bold text-lg mb-2">{course.title}</h2>
-                      <p className="text-gray-600 mb-4">
-                        {course.description.length > 500
-                          ? `${course.description.slice(0, 500)}...`
-                          : course.description}
-                      </p>
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="font-bold text-xl">
-                          ₹{course.price}{" "}
-                        </span>
-                        <span className="text-green-600">20% off</span>
-                      </div>
-
-                      {/* Buy page */}
-                      <Link
-                        to={`/buy/${course._id}`} // Pass courseId in URL
-                        className="bg-orange-500 w-full text-white px-4 py-2 rounded-lg hover:bg-blue-900 duration-300"
+                  {courses.map((course) => {
+                    const owned = purchasedCourseIds.has(String(course._id));
+                    return (
+                      <div
+                        key={course._id}
+                        className="border border-gray-200 rounded-lg p-4 shadow-sm"
                       >
-                        Buy Now
-                      </Link>
-                    </div>
-                  ))}
+                        <img
+                          src={course.image?.url}
+                          alt={course.title}
+                          className="rounded mb-4"
+                        />
+                        <h2 className="font-bold text-lg mb-2">{course.title}</h2>
+                        <p className="text-gray-600 mb-4">
+                          {course.description.length > 500
+                            ? `${course.description.slice(0, 500)}...`
+                            : course.description}
+                        </p>
+                        <div className="flex justify-between items-center mb-4">
+                          <span className="font-bold text-xl">₹{course.price}</span>
+                          {owned ? (
+                            <span className="text-green-600 font-medium">Purchased</span>
+                          ) : (
+                            <span className="text-gray-500 text-sm">Pay to unlock</span>
+                          )}
+                        </div>
+
+                        {owned ? (
+                          <Link
+                            to="/purchases"
+                            className="block text-center bg-green-600 w-full text-white px-4 py-2 rounded-lg hover:bg-green-700 duration-300"
+                          >
+                            View in My Purchases
+                          </Link>
+                        ) : (
+                          <Link
+                            to={`/buy/${course._id}`}
+                            className="block text-center bg-orange-500 w-full text-white px-4 py-2 rounded-lg hover:bg-orange-600 duration-300"
+                          >
+                            Buy Now
+                          </Link>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

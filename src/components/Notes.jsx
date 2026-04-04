@@ -345,7 +345,7 @@ function Notes() {
                           className={`px-4 py-2 rounded-md text-white ${
                             isPurchased
                               ? "bg-green-600 hover:bg-green-700"
-                              : "bg-green-300 cursor-not-allowed"
+                              : "bg-gray-400 cursor-not-allowed"
                           }`}
                         >
                           Download Notes
