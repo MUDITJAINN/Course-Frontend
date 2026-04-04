@@ -26,6 +26,7 @@ function AdminPanel() {
     price: "",
     pages: "",
     previewImageUrl: "",
+    previewFileUrl: "",
     downloadFileUrl: "",
   });
 
@@ -106,6 +107,7 @@ function AdminPanel() {
         price: "",
         pages: "",
         previewImageUrl: "",
+        previewFileUrl: "",
         downloadFileUrl: "",
       });
     } catch (error) {
@@ -274,7 +276,7 @@ function AdminPanel() {
             </div>
             <input
               type="text"
-              placeholder="Preview image URL (e.g. /react.png)"
+              placeholder="Preview image URL (e.g. https://... or /react.png)"
               value={noteData.previewImageUrl}
               onChange={(e) => setNoteData({ ...noteData, previewImageUrl: e.target.value })}
               className="w-full border border-gray-300 rounded-md px-3 py-2 mb-3"
@@ -282,12 +284,27 @@ function AdminPanel() {
             />
             <input
               type="text"
-              placeholder="Download file URL (e.g. /notes/DSA.pdf)"
+              placeholder="Preview PDF path (e.g. /notes/my-note-preview.pdf)"
+              value={noteData.previewFileUrl}
+              onChange={(e) => setNoteData({ ...noteData, previewFileUrl: e.target.value })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 mb-1"
+            />
+            <p className="text-xs text-gray-600 mb-3">
+              Put the actual PDF on the server in folder{" "}
+              <code className="bg-gray-100 px-1 rounded">secure-notes</code> (see <code className="bg-gray-100 px-1 rounded">NOTE_FILES_DIR</code> in backend <code className="bg-gray-100 px-1 rounded">.env</code>).
+              Only the <strong>filename</strong> matters (here: <code className="bg-gray-100 px-1 rounded">my-note-preview.pdf</code>) — it must match the file name on disk. Use a short PDF with only the first 1–2 pages for the store preview.
+            </p>
+            <input
+              type="text"
+              placeholder="Full notes file path (e.g. /notes/DSA-full.pdf)"
               value={noteData.downloadFileUrl}
               onChange={(e) => setNoteData({ ...noteData, downloadFileUrl: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 mb-4"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 mb-1"
               required
             />
+            <p className="text-xs text-gray-600 mb-4">
+              Full file must also live in the same <code className="bg-gray-100 px-1 rounded">secure-notes</code> folder; basename must match (e.g. <code className="bg-gray-100 px-1 rounded">DSA-full.pdf</code>).
+            </p>
             <button
               type="submit"
               disabled={isSubmitting}
