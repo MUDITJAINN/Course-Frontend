@@ -47,6 +47,7 @@ const testimonials = [
 
 function Home() {
   const [courses, setCourses] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -68,6 +69,20 @@ function Home() {
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/notes/all`, {
+          withCredentials: true,
+        });
+        setNotes(response.data.notes || []);
+      } catch (error) {
+        console.log("error in fetchNotes ", error);
+      }
+    };
+    fetchNotes();
+  }, []);
+
   const handleLogout = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/user/logout`, {
@@ -82,12 +97,19 @@ function Home() {
     }
   };
 
-  const minPrice = useMemo(() => {
+  const minCoursePrice = useMemo(() => {
     if (!courses.length) return null;
     const prices = courses.map((c) => Number(c.price)).filter((n) => !Number.isNaN(n));
     if (!prices.length) return null;
     return Math.min(...prices);
   }, [courses]);
+
+  const minNotePrice = useMemo(() => {
+    if (!notes.length) return null;
+    const prices = notes.map((n) => Number(n.price)).filter((n) => !Number.isNaN(n));
+    if (!prices.length) return null;
+    return Math.min(...prices);
+  }, [notes]);
 
   const sliderSettings = {
     dots: true,
@@ -407,54 +429,139 @@ function Home() {
           </div>
         </section>
 
-        {/* Pricing */}
+        {/* Pricing — courses, notes & freelance (same section) */}
         <section className="py-16 md:py-20" id="pricing">
-          <div className="max-w-3xl mx-auto text-center mb-10">
+          <div className="max-w-3xl mx-auto text-center mb-12">
             <p className="text-orange-400 text-sm font-semibold tracking-widest uppercase mb-3">
               Pricing
             </p>
             <h3 className="text-3xl md:text-4xl font-bold font-poppins text-white mb-4">
-              Simple, one-time pricing
+              Courses, notes &amp; freelance
             </h3>
             <p className="text-gray-300 text-lg">
-              Pay per course or per notes pack. No hidden subscriptions — you keep access to what
-              you buy.
+              Digital products are one-time purchases. Freelance work is quoted per project — no
+              subscriptions on the store.
             </p>
           </div>
-          <div className="max-w-lg mx-auto bg-gradient-to-b from-slate-800/80 to-slate-900/90 border border-orange-500/30 rounded-2xl p-8 md:p-10 text-center shadow-2xl shadow-black/40">
-            {minPrice != null ? (
-              <>
-                <p className="text-gray-400 text-sm uppercase tracking-wide mb-2">Courses from</p>
-                <p className="text-5xl md:text-6xl font-bold text-white font-poppins">
-                  ₹{minPrice}
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
+            {/* Courses */}
+            <div className="flex flex-col bg-gradient-to-b from-slate-800/90 to-slate-900/95 border border-orange-500/35 rounded-2xl p-6 md:p-8 shadow-xl shadow-black/30">
+              <div className="text-center mb-6">
+                <p className="text-orange-400/90 text-xs font-semibold uppercase tracking-wider mb-2">
+                  Courses
                 </p>
-                <p className="text-gray-400 mt-2 text-sm">per course · check each listing for exact price</p>
-              </>
-            ) : (
-              <>
-                <p className="text-gray-300 text-lg mb-2">Pricing per listing</p>
-                <p className="text-gray-500 text-sm">
-                  Browse courses and notes — each product shows its own price before checkout.
+                {minCoursePrice != null ? (
+                  <>
+                    <p className="text-4xl md:text-5xl font-bold text-white font-poppins">
+                      ₹{minCoursePrice}
+                    </p>
+                    <p className="text-gray-400 text-sm mt-2">from · per course</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-xl font-semibold text-white">Per listing</p>
+                    <p className="text-gray-500 text-sm mt-2">Prices on each course card</p>
+                  </>
+                )}
+              </div>
+              <ul className="text-left text-gray-300 text-sm space-y-2.5 flex-grow mb-6">
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-green-400 flex-shrink-0 mt-0.5" /> Full course access after
+                  payment
+                </li>
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-green-400 flex-shrink-0 mt-0.5" /> PhonePe checkout
+                </li>
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-green-400 flex-shrink-0 mt-0.5" /> Listed under My purchases
+                </li>
+              </ul>
+              <Link
+                to="/courses"
+                className="inline-flex w-full justify-center items-center gap-2 bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-400 transition-colors text-sm"
+              >
+                Browse courses <FaArrowRight className="text-sm" />
+              </Link>
+            </div>
+
+            {/* Notes */}
+            <div className="flex flex-col bg-gradient-to-b from-slate-800/90 to-slate-900/95 border border-violet-500/35 rounded-2xl p-6 md:p-8 shadow-xl shadow-black/30 md:scale-[1.02] md:z-10">
+              <div className="text-center mb-6">
+                <p className="text-violet-400 text-xs font-semibold uppercase tracking-wider mb-2">
+                  Notes
                 </p>
-              </>
-            )}
-            <ul className="text-left text-gray-300 text-sm space-y-3 mt-8 mb-8 max-w-xs mx-auto">
-              <li className="flex items-center gap-2">
-                <FaCheck className="text-green-400 flex-shrink-0" /> PhonePe checkout
-              </li>
-              <li className="flex items-center gap-2">
-                <FaCheck className="text-green-400 flex-shrink-0" /> Purchases saved to your account
-              </li>
-              <li className="flex items-center gap-2">
-                <FaCheck className="text-green-400 flex-shrink-0" /> Notes download after successful payment
-              </li>
-            </ul>
-            <Link
-              to="/courses"
-              className="inline-flex w-full justify-center items-center gap-2 bg-orange-500 text-white py-3.5 rounded-xl font-semibold hover:bg-orange-400 transition-colors"
-            >
-              See all prices <FaArrowRight className="text-sm" />
-            </Link>
+                {minNotePrice != null ? (
+                  <>
+                    <p className="text-4xl md:text-5xl font-bold text-white font-poppins">
+                      ₹{minNotePrice}
+                    </p>
+                    <p className="text-gray-400 text-sm mt-2">from · per PDF pack</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-xl font-semibold text-white">Per pack</p>
+                    <p className="text-gray-500 text-sm mt-2">Each note has its own price</p>
+                  </>
+                )}
+              </div>
+              <ul className="text-left text-gray-300 text-sm space-y-2.5 flex-grow mb-6">
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-green-400 flex-shrink-0 mt-0.5" /> Preview before you buy
+                </li>
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-green-400 flex-shrink-0 mt-0.5" /> Secure PDF download after
+                  payment
+                </li>
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-green-400 flex-shrink-0 mt-0.5" /> Same PhonePe flow as courses
+                </li>
+              </ul>
+              <Link
+                to="/notes"
+                className="inline-flex w-full justify-center items-center gap-2 bg-violet-600 text-white py-3 rounded-xl font-semibold hover:bg-violet-500 transition-colors text-sm"
+              >
+                Shop notes <FaArrowRight className="text-sm" />
+              </Link>
+            </div>
+
+            {/* Freelance */}
+            <div className="flex flex-col bg-gradient-to-b from-slate-800/90 to-slate-900/95 border border-emerald-500/35 rounded-2xl p-6 md:p-8 shadow-xl shadow-black/30">
+              <div className="text-center mb-6">
+                <p className="text-emerald-400/90 text-xs font-semibold uppercase tracking-wider mb-2">
+                  Freelance
+                </p>
+                <p className="text-2xl md:text-3xl font-bold text-white font-poppins leading-tight">
+                  Project-based
+                </p>
+                <p className="text-gray-400 text-sm mt-3">
+                  Typical builds start around{" "}
+                  <span className="text-emerald-300 font-semibold">₹4,999</span>
+                  <span className="text-gray-500">*</span>
+                </p>
+                <p className="text-gray-500 text-xs mt-2">*Indicative — final quote after scope</p>
+              </div>
+              <ul className="text-left text-gray-300 text-sm space-y-2.5 flex-grow mb-6">
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-emerald-400/90 flex-shrink-0 mt-0.5" /> Web apps, React &amp;
+                  Node
+                </li>
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-emerald-400/90 flex-shrink-0 mt-0.5" /> Payments &amp; API
+                  integrations
+                </li>
+                <li className="flex items-start gap-2">
+                  <FaCheck className="text-emerald-400/90 flex-shrink-0 mt-0.5" /> Fixed scope &amp;
+                  milestones
+                </li>
+              </ul>
+              <Link
+                to="/services"
+                className="inline-flex w-full justify-center items-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-semibold hover:bg-emerald-500 transition-colors text-sm"
+              >
+                Request a quote <FaArrowRight className="text-sm" />
+              </Link>
+            </div>
           </div>
         </section>
 
