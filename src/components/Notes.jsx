@@ -6,9 +6,11 @@ import { HiMenu, HiX } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { IoLogIn, IoLogOut } from "react-icons/io5";
 import { RiHome2Fill } from "react-icons/ri";
+import { FiSearch } from "react-icons/fi";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../assets/Programmingwithmudit.png";
 import { BACKEND_URL } from "../utils/utils";
+import ProfileMenu from "./ProfileMenu";
 
 function Notes() {
   const navigate = useNavigate();
@@ -20,10 +22,32 @@ function Notes() {
   const [loadingNoteId, setLoadingNoteId] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [searchQuery, setSearchQuery] = useState("");
+  const user = JSON.parse(localStorage.getItem("user") || "null");
   const token = user?.token;
 
-  const purchasedSet = useMemo(() => new Set(purchasedNotes), [purchasedNotes]);
+  const purchasedSet = useMemo(() => new Set(purchasedNotes.map(String)), [purchasedNotes]);
+
+  const filteredStoreNotes = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return notes;
+    return notes.filter(
+      (n) =>
+        (n.title && n.title.toLowerCase().includes(q)) ||
+        (n.description && String(n.description).toLowerCase().includes(q))
+    );
+  }, [notes, searchQuery]);
+
+  const filteredPurchasedNotes = useMemo(() => {
+    const list = notes.filter((n) => purchasedSet.has(String(n._id)));
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter(
+      (n) =>
+        (n.title && n.title.toLowerCase().includes(q)) ||
+        (n.description && String(n.description).toLowerCase().includes(q))
+    );
+  }, [notes, purchasedSet, searchQuery]);
 
   const fetchNotes = async () => {
     try {
@@ -233,15 +257,23 @@ function Notes() {
               </button>
             </li>
             <li className="mb-4">
-              <a href="#" className="flex items-center">
+              <Link to="/settings" className="flex items-center">
                 <IoMdSettings className="mr-2" /> Settings
-              </a>
+              </Link>
             </li>
             <li>
-              {!isLoggedIn && (
+              {!isLoggedIn ? (
                 <Link to="/login" className="flex items-center">
                   <IoLogIn className="mr-2" /> Login
                 </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex items-center text-gray-800 hover:text-red-600"
+                >
+                  <IoLogOut className="mr-2" /> Logout
+                </button>
               )}
             </li>
           </ul>
@@ -250,7 +282,7 @@ function Notes() {
 
       <div className="w-full ml-0 py-10 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
                 {activeView === "purchases" ? "My Notes Purchases" : "Notes Store"}
@@ -261,14 +293,31 @@ function Notes() {
                   : "First page preview is visible. Buy to unlock full download access."}
               </p>
             </div>
+            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto lg:max-w-md">
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={
+                  activeView === "purchases"
+                    ? "Search your purchases..."
+                    : "Search notes..."
+                }
+                className="flex-1 min-w-[180px] border border-gray-300 rounded-l-lg px-3 py-2 h-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                aria-label="Search notes"
+              />
+              <span className="h-10 border border-l-0 border-gray-300 rounded-r-lg px-3 flex items-center bg-gray-50 shrink-0">
+                <FiSearch className="text-lg text-gray-600" />
+              </span>
+              <ProfileMenu />
+            </div>
           </div>
           {activeView === "purchases" ? (
             <div>
-              {notes.filter((note) => purchasedSet.has(note._id)).length > 0 ? (
+              {notes.filter((note) => purchasedSet.has(String(note._id))).length > 0 ? (
+                filteredPurchasedNotes.length > 0 ? (
                 <div className="grid gap-4 md:grid-cols-3">
-                  {notes
-                    .filter((note) => purchasedSet.has(note._id))
-                    .map((note) => (
+                  {filteredPurchasedNotes.map((note) => (
                       <div
                         key={`purchased-${note._id}`}
                         className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
@@ -285,14 +334,22 @@ function Notes() {
                       </div>
                     ))}
                 </div>
+                ) : (
+                  <p className="text-gray-500">No notes match your search.</p>
+                )
               ) : (
                 <p className="text-gray-500">No purchased notes yet.</p>
               )}
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2">
-              {notes.map((note) => {
-                const isPurchased = purchasedSet.has(note._id);
+              {filteredStoreNotes.length === 0 ? (
+                <p className="text-gray-500 col-span-full text-center py-8">
+                  {notes.length === 0 ? "No notes published yet." : "No notes match your search."}
+                </p>
+              ) : (
+              filteredStoreNotes.map((note) => {
+                const isPurchased = purchasedSet.has(String(note._id));
                 return (
                   <div
                     key={note._id}
@@ -377,7 +434,8 @@ function Notes() {
                     </div>
                   </div>
                 );
-              })}
+              })
+              )}
             </div>
           )}
         </div>

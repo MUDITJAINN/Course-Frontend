@@ -32,7 +32,8 @@ function Login() {
       console.log("Login successful: ", response.data);
       toast.success(response.data.message);
       localStorage.setItem("user", JSON.stringify(response.data));
-      navigate("/");
+      const afterLogin = localStorage.getItem("pwm_pref_after_login") || "/";
+      navigate(afterLogin);
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.errors || "Login failed!!!");

@@ -1,17 +1,15 @@
-
-import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import axios for API call
-import { FaCircleUser } from "react-icons/fa6";
+import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import { RiHome2Fill } from "react-icons/ri";
 import { FaDiscourse, FaDownload } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { IoLogIn } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
-import { HiMenu, HiX } from "react-icons/hi"; // Import menu and close icons
+import { HiMenu, HiX } from "react-icons/hi";
 import logo from "../assets/Programmingwithmudit.png";
-import toast from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
+import ProfileMenu from "./ProfileMenu";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
@@ -21,9 +19,26 @@ function Courses() {
   const [activeView, setActiveView] = useState("store"); // "store" | "purchases"
   const [coursePurchases, setCoursePurchases] = useState([]);
   const [purchasedCourseIds, setPurchasedCourseIds] = useState(() => new Set());
-  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  console.log("courses: ", courses);
+  const matchesSearch = (title, description) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      (title && title.toLowerCase().includes(q)) ||
+      (description && String(description).toLowerCase().includes(q))
+    );
+  };
+
+  const filteredCourses = useMemo(
+    () => courses.filter((c) => matchesSearch(c.title, c.description)),
+    [courses, searchQuery]
+  );
+
+  const filteredPurchases = useMemo(
+    () => coursePurchases.filter((c) => matchesSearch(c.title, c.description)),
+    [coursePurchases, searchQuery]
+  );
 
   // Check token
   useEffect(() => {
@@ -126,9 +141,9 @@ function Courses() {
               </button>
             </li>
             <li className="mb-4">
-              <a href="#" className="flex items-center">
+              <Link to="/settings" className="flex items-center">
                 <IoMdSettings className="mr-2" /> Settings
-              </a>
+              </Link>
             </li>
             <li>
               {!isLoggedIn && (
@@ -145,15 +160,30 @@ function Courses() {
       <main className="ml-0 w-full bg-white p-10">
         {activeView === "purchases" ? (
           <>
-            <header className="flex justify-between items-center mb-10">
+            <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10">
               <h1 className="text-xl font-bold">My Course Purchases</h1>
+              <div className="flex items-center gap-2 w-full sm:w-auto max-w-md">
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search purchases..."
+                  className="flex-1 border border-gray-300 rounded-l-lg px-3 py-2 h-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <span className="h-10 border border-l-0 border-gray-300 rounded-r-lg px-3 flex items-center bg-gray-50">
+                  <FiSearch className="text-lg text-gray-600" />
+                </span>
+                <ProfileMenu />
+              </div>
             </header>
             <div className="overflow-y-auto h-[75vh]">
               {coursePurchases.length === 0 ? (
                 <p className="text-center text-gray-500">No purchased courses yet.</p>
+              ) : filteredPurchases.length === 0 ? (
+                <p className="text-center text-gray-500">No matches for your search.</p>
               ) : (
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                  {coursePurchases.map((course, idx) => (
+                  {filteredPurchases.map((course, idx) => (
                     <div
                       key={`p-${course._id}-${idx}`}
                       className="border border-gray-200 rounded-lg p-4 shadow-sm"
@@ -181,21 +211,21 @@ function Courses() {
           </>
         ) : (
           <>
-            <header className="flex justify-between items-center mb-10">
+            <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10">
               <h1 className="text-xl font-bold">Courses</h1>
-              <div className="flex items-center space-x-3">
-                <div className="flex items-center">
-                  <input
-                    type="text"
-                    placeholder="Type here to search..."
-                    className="border border-gray-300 rounded-l-full px-4 py-2 h-10 focus:outline-none"
-                  />
-                  <button className="h-10 border border-gray-300 rounded-r-full px-4 flex items-center justify-center">
-                    <FiSearch className="text-xl text-gray-600" />
-                  </button>
-                </div>
-
-                <FaCircleUser className="text-4xl text-blue-600" />
+              <div className="flex items-center gap-2 w-full sm:w-auto sm:max-w-md">
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search by title or description..."
+                  className="flex-1 border border-gray-300 rounded-l-full px-4 py-2 h-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  aria-label="Search courses"
+                />
+                <span className="h-10 border border-l-0 border-gray-300 rounded-r-full px-4 flex items-center bg-gray-50 shrink-0">
+                  <FiSearch className="text-xl text-gray-600" />
+                </span>
+                <ProfileMenu />
               </div>
             </header>
 
@@ -207,9 +237,11 @@ function Courses() {
                 <p className="text-center text-gray-500">
                   No course posted yet by admin
                 </p>
+              ) : filteredCourses.length === 0 ? (
+                <p className="text-center text-gray-500">No courses match your search.</p>
               ) : (
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                  {courses.map((course) => {
+                  {filteredCourses.map((course) => {
                     const owned = purchasedCourseIds.has(String(course._id));
                     return (
                       <div

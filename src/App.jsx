@@ -12,6 +12,7 @@ import RefundAndCancellation from "./components/RefundAndCancellation";
 import Notes from "./components/Notes";
 import AdminPanel from "./components/AdminPanel";
 import Services from "./components/Services";
+import Settings from "./components/Settings";
 function App() {
   return (
     <div>
@@ -25,6 +26,7 @@ function App() {
         <Route path="/notes" element={<Notes />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/refund" element={<RefundAndCancellation />} />
