@@ -13,6 +13,12 @@ import Notes from "./components/Notes";
 import AdminPanel from "./components/AdminPanel";
 import Services from "./components/Services";
 import Settings from "./components/Settings";
+import FavoritesNotes from "./components/favorites/FavoritesNotes";
+import FavoritesCourses from "./components/favorites/FavoritesCourses";
+import About from "./components/About";
+import MockInterviews from "./components/MockInterviews";
+import Tips from "./components/Tips";
+import CodingHacks from "./components/CodingHacks";
 function App() {
   return (
     <div>
@@ -27,6 +33,12 @@ function App() {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/services" element={<Services />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/favorites/notes" element={<FavoritesNotes />} />
+        <Route path="/favorites/courses" element={<FavoritesCourses />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/mock-interviews" element={<MockInterviews />} />
+        <Route path="/tips" element={<Tips />} />
+        <Route path="/coding-hacks" element={<CodingHacks />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/refund" element={<RefundAndCancellation />} />

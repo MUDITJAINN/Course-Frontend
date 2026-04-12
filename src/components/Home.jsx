@@ -607,7 +607,7 @@ function Home() {
 
         {/* Footer */}
         <footer>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
             <div className="flex flex-col items-center md:items-start">
               <div className="flex items-center space-x-2">
                 <img src={logo} alt="" className="w-10 h-10 rounded-full" />
@@ -654,11 +654,6 @@ function Home() {
             <div className="flex flex-col items-center md:items-start">
               <h3 className="text-lg font-semibold mb-4 font-poppins">Connect</h3>
               <ul className="space-y-2 text-gray-400 text-center md:text-left">
-                {/* <li>
-                  <Link to="/services" className="hover:text-white duration-300">
-                    Freelance services
-                  </Link>
-                </li> */}
                 <li>
                   <a
                     href={TELEGRAM_URL}
@@ -705,6 +700,32 @@ function Home() {
                   >
                     GitHub
                   </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex flex-col items-center md:items-start">
+              <h3 className="text-lg font-semibold mb-4 font-poppins">Explore More</h3>
+              <ul className="space-y-2 text-gray-400 text-center md:text-left">
+                <li>
+                  <Link to="/about" className="hover:text-white duration-300">
+                    Vision · Mission · FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/mock-interviews" className="hover:text-white duration-300">
+                    Mock interviews
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/tips" className="hover:text-white duration-300">
+                    Tips that move
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/coding-hacks" className="hover:text-white duration-300">
+                    Coding hacks
+                  </Link>
                 </li>
               </ul>
             </div>

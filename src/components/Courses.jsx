@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { RiHome2Fill } from "react-icons/ri";
 import { FaDiscourse, FaDownload } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { IoLogIn } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
@@ -10,6 +11,7 @@ import logo from "../assets/Programmingwithmudit.png";
 import { Link } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
 import ProfileMenu from "./ProfileMenu";
+import { getFavoriteCoursesSet, toggleFavoriteCourse } from "../utils/favorites";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
@@ -20,6 +22,13 @@ function Courses() {
   const [coursePurchases, setCoursePurchases] = useState([]);
   const [purchasedCourseIds, setPurchasedCourseIds] = useState(() => new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [favoriteCourses, setFavoriteCourses] = useState(() => getFavoriteCoursesSet());
+
+  const isFavorite = (courseId) => favoriteCourses.has(String(courseId));
+  const onToggleFavorite = (courseId) => {
+    const next = toggleFavoriteCourse(courseId);
+    setFavoriteCourses(new Set(next));
+  };
 
   const matchesSearch = (title, description) => {
     const q = searchQuery.trim().toLowerCase();
@@ -145,6 +154,11 @@ function Courses() {
                 <IoMdSettings className="mr-2" /> Settings
               </Link>
             </li>
+            <li className="mb-4">
+              <Link to="/favorites/courses" className="flex items-center">
+                <FaRegHeart className="mr-2" /> Favorites
+              </Link>
+            </li>
             <li>
               {!isLoggedIn && (
                 <Link to={"/login"} className="flex items-center">
@@ -188,12 +202,27 @@ function Courses() {
                       key={`p-${course._id}-${idx}`}
                       className="border border-gray-200 rounded-lg p-4 shadow-sm"
                     >
+                      <div className="flex items-start justify-between gap-3">
+                        <h2 className="font-bold text-lg mb-2">{course.title}</h2>
+                        <button
+                          type="button"
+                          onClick={() => onToggleFavorite(course._id)}
+                          className="shrink-0 rounded-full w-9 h-9 border border-gray-200 hover:border-gray-300 bg-white flex items-center justify-center"
+                          title={isFavorite(course._id) ? "Remove from favorites" : "Add to favorites"}
+                          aria-label={isFavorite(course._id) ? "Unfavorite course" : "Favorite course"}
+                        >
+                          {isFavorite(course._id) ? (
+                            <FaHeart className="text-red-500" />
+                          ) : (
+                            <FaRegHeart className="text-gray-700" />
+                          )}
+                        </button>
+                      </div>
                       <img
                         src={course.image?.url}
                         alt={course.title}
                         className="rounded mb-4"
                       />
-                      <h2 className="font-bold text-lg mb-2">{course.title}</h2>
                       <p className="text-gray-600 mb-4">
                         {course.description.length > 500
                           ? `${course.description.slice(0, 500)}...`
@@ -248,12 +277,27 @@ function Courses() {
                         key={course._id}
                         className="border border-gray-200 rounded-lg p-4 shadow-sm"
                       >
+                        <div className="flex items-start justify-between gap-3">
+                          <h2 className="font-bold text-lg mb-2">{course.title}</h2>
+                          <button
+                            type="button"
+                            onClick={() => onToggleFavorite(course._id)}
+                            className="shrink-0 rounded-full w-9 h-9 border border-gray-200 hover:border-gray-300 bg-white flex items-center justify-center"
+                            title={isFavorite(course._id) ? "Remove from favorites" : "Add to favorites"}
+                            aria-label={isFavorite(course._id) ? "Unfavorite course" : "Favorite course"}
+                          >
+                            {isFavorite(course._id) ? (
+                              <FaHeart className="text-red-500" />
+                            ) : (
+                              <FaRegHeart className="text-gray-700" />
+                            )}
+                          </button>
+                        </div>
                         <img
                           src={course.image?.url}
                           alt={course.title}
                           className="rounded mb-4"
                         />
-                        <h2 className="font-bold text-lg mb-2">{course.title}</h2>
                         <p className="text-gray-600 mb-4">
                           {course.description.length > 500
                             ? `${course.description.slice(0, 500)}...`

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaBook, FaDownload } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoMdSettings } from "react-icons/io";
 import { IoLogIn, IoLogOut } from "react-icons/io5";
@@ -11,6 +12,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../assets/Programmingwithmudit.png";
 import { BACKEND_URL } from "../utils/utils";
 import ProfileMenu from "./ProfileMenu";
+import { getFavoriteNotesSet, toggleFavoriteNote } from "../utils/favorites";
 
 function Notes() {
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ function Notes() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [favoriteNotes, setFavoriteNotes] = useState(() => getFavoriteNotesSet());
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const token = user?.token;
 
@@ -48,6 +51,12 @@ function Notes() {
         (n.description && String(n.description).toLowerCase().includes(q))
     );
   }, [notes, purchasedSet, searchQuery]);
+
+  const isFavorite = (noteId) => favoriteNotes.has(String(noteId));
+  const onToggleFavorite = (noteId) => {
+    const next = toggleFavoriteNote(noteId);
+    setFavoriteNotes(new Set(next));
+  };
 
   const fetchNotes = async () => {
     try {
@@ -261,6 +270,11 @@ function Notes() {
                 <IoMdSettings className="mr-2" /> Settings
               </Link>
             </li>
+            <li className="mb-4">
+              <Link to="/favorites/notes" className="flex items-center">
+                <FaRegHeart className="mr-2" /> Favorites
+              </Link>
+            </li>
             <li>
               {!isLoggedIn ? (
                 <Link to="/login" className="flex items-center">
@@ -364,6 +378,19 @@ function Notes() {
                       <span className="absolute top-3 left-3 bg-black/80 text-white text-xs px-3 py-1 rounded-full">
                         First page preview
                       </span>
+                      <button
+                        type="button"
+                        onClick={() => onToggleFavorite(note._id)}
+                        className="absolute top-3 right-3 bg-white/95 hover:bg-white text-gray-900 rounded-full w-9 h-9 flex items-center justify-center shadow"
+                        title={isFavorite(note._id) ? "Remove from favorites" : "Add to favorites"}
+                        aria-label={isFavorite(note._id) ? "Unfavorite note" : "Favorite note"}
+                      >
+                        {isFavorite(note._id) ? (
+                          <FaHeart className="text-red-500" />
+                        ) : (
+                          <FaRegHeart className="text-gray-700" />
+                        )}
+                      </button>
                     </div>
 
                     <div className="p-5">
