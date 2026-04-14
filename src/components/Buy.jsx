@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
+import { COURSES_COMING_SOON } from "../config/comingSoon";
 
 function Buy() {
   const { courseId } = useParams();
@@ -149,14 +150,25 @@ function Buy() {
                 </Link>
               </>
             ) : (
-              <button
-                type="button"
-                onClick={handlePay}
-                disabled={paying}
-                className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 disabled:opacity-60"
-              >
-                {paying ? "Redirecting to payment…" : "Pay securely with PhonePe"}
-              </button>
+              <>
+                {COURSES_COMING_SOON ? (
+                  <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-yellow-900">
+                    <p className="font-semibold">Coming soon</p>
+                    <p className="text-sm mt-1">
+                      This course is under development. Purchasing will be enabled later.
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handlePay}
+                    disabled={paying}
+                    className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 disabled:opacity-60"
+                  >
+                    {paying ? "Redirecting to payment…" : "Pay securely with PhonePe"}
+                  </button>
+                )}
+              </>
             )}
             <Link
               to="/courses"

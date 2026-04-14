@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
 import ProfileMenu from "./ProfileMenu";
 import { getFavoriteCoursesSet, toggleFavoriteCourse } from "../utils/favorites";
+import { COURSES_COMING_SOON } from "../config/comingSoon";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
@@ -172,6 +173,16 @@ function Courses() {
 
       {/* Main content */}
       <main className="ml-0 w-full bg-white p-10">
+        {COURSES_COMING_SOON && activeView === "store" && (
+          <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-yellow-900">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <p className="font-semibold">Coming soon</p>
+              <p className="text-sm">
+                Courses are under development right now. Purchasing will be enabled later.
+              </p>
+            </div>
+          </div>
+        )}
         {activeView === "purchases" ? (
           <>
             <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10">
@@ -320,12 +331,24 @@ function Courses() {
                             View in My Purchases
                           </Link>
                         ) : (
-                          <Link
-                            to={`/buy/${course._id}`}
-                            className="block text-center bg-orange-500 w-full text-white px-4 py-2 rounded-lg hover:bg-orange-600 duration-300"
-                          >
-                            Buy Now
-                          </Link>
+                          <>
+                            {COURSES_COMING_SOON ? (
+                              <button
+                                type="button"
+                                disabled
+                                className="block w-full text-center bg-gray-200 text-gray-700 px-4 py-2 rounded-lg cursor-not-allowed"
+                              >
+                                Coming Soon
+                              </button>
+                            ) : (
+                              <Link
+                                to={`/buy/${course._id}`}
+                                className="block text-center bg-orange-500 w-full text-white px-4 py-2 rounded-lg hover:bg-orange-600 duration-300"
+                              >
+                                Buy Now
+                              </Link>
+                            )}
+                          </>
                         )}
                       </div>
                     );
