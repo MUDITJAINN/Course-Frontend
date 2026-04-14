@@ -17,7 +17,19 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import toast from "react-hot-toast";
-import { BACKEND_URL, TELEGRAM_URL, WHATSAPP_URL } from "../utils/utils";
+import { BLOG_POSTS } from "../blog/posts";
+import {
+  BACKEND_URL,
+  DEVTO_URL,
+  FACEBOOK_URL,
+  GITHUB_URL,
+  INSTAGRAM_URL,
+  LINKEDIN_URL,
+  MEDIUM_URL,
+  TELEGRAM_URL,
+  TWITTER_URL,
+  WHATSAPP_URL,
+} from "../utils/utils";
 
 const PORTFOLIO_URL = "https://muditt-portfolio.netlify.app/";
 
@@ -49,6 +61,12 @@ function Home() {
   const [courses, setCourses] = useState([]);
   const [notes, setNotes] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const latestPosts = useMemo(() => {
+    return [...BLOG_POSTS]
+      .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+      .slice(0, 3);
+  }, []);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -603,6 +621,58 @@ function Home() {
           </p> */}
         </section>
 
+        {/* Latest from blog */}
+        <section className="mt-10">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+            <div>
+              <p className="text-orange-400/90 text-xs font-semibold uppercase tracking-wider mb-2">
+                Blog
+              </p>
+              <h3 className="text-2xl md:text-3xl font-bold text-white font-poppins">
+                Latest from the blog
+              </h3>
+              <p className="text-gray-300 mt-2">
+                Tutorials, problem solving, and freelancing insights.
+              </p>
+            </div>
+            <Link
+              to="/blog"
+              className="inline-flex items-center justify-center bg-white/10 text-white px-5 py-2.5 rounded-xl font-semibold border border-white/15 hover:bg-white/15 transition-colors"
+            >
+              View all posts <FaArrowRight className="ml-2 text-sm" />
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {latestPosts.map((p) => (
+              <article
+                key={p.slug}
+                className="bg-gradient-to-b from-slate-800/80 to-slate-900/90 border border-white/10 rounded-2xl p-6 shadow-xl shadow-black/30"
+              >
+                <p className="text-xs text-gray-400">
+                  {p.category} • {p.date}
+                </p>
+                <h4 className="text-lg font-bold text-white mt-2 leading-snug">
+                  <Link to={`/blog/${p.slug}`} className="hover:underline">
+                    {p.title}
+                  </Link>
+                </h4>
+                <p className="text-gray-300 text-sm mt-3 line-clamp-3">
+                  {p.description}
+                </p>
+                <div className="mt-5">
+                  <Link
+                    to={`/blog/${p.slug}`}
+                    className="inline-flex items-center text-orange-300 hover:text-orange-200 font-semibold"
+                  >
+                    Read post <FaArrowRight className="ml-2 text-sm" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <hr className="border-white/20 my-12" />
 
         {/* Footer */}
@@ -638,13 +708,31 @@ function Home() {
                       <FaWhatsapp className="text-2xl duration-300" />
                     </a>
                   ) : null}
-                  <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-white">
+                  <a
+                    href={FACEBOOK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    className="text-gray-400 hover:text-white"
+                  >
                     <FaFacebook className="text-2xl hover:text-blue-400 duration-300" />
                   </a>
-                  <a href="#" aria-label="Instagram" className="text-gray-400 hover:text-white">
+                  <a
+                    href={INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="text-gray-400 hover:text-white"
+                  >
                     <FaInstagram className="text-2xl hover:text-pink-600 duration-300" />
                   </a>
-                  <a href="#" aria-label="Twitter" className="text-gray-400 hover:text-white">
+                  <a
+                    href={TWITTER_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Twitter"
+                    className="text-gray-400 hover:text-white"
+                  >
                     <FaTwitter className="text-2xl hover:text-blue-600 duration-300" />
                   </a>
                 </div>
@@ -693,12 +781,42 @@ function Home() {
                 </li>
                 <li>
                   <a
-                    href="https://github.com/programmingwithmudit"
+                    href={GITHUB_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-white duration-300"
                   >
                     GitHub
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={LINKEDIN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white duration-300"
+                  >
+                    LinkedIn
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={DEVTO_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white duration-300"
+                  >
+                    Dev.to
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={MEDIUM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white duration-300"
+                  >
+                    Medium
                   </a>
                 </li>
               </ul>
@@ -707,6 +825,11 @@ function Home() {
             <div className="flex flex-col items-center md:items-start">
               <h3 className="text-lg font-semibold mb-4 font-poppins">Explore More</h3>
               <ul className="space-y-2 text-gray-400 text-center md:text-left">
+                <li>
+                  <Link to="/blog" className="hover:text-white duration-300">
+                    Blog
+                  </Link>
+                </li>
                 <li>
                   <Link to="/about" className="hover:text-white duration-300">
                     About Us

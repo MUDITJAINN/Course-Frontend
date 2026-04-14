@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import emailjs from "@emailjs/browser";
+import Seo from "../seo/Seo";
+import { SITE_NAME, toAbsoluteUrl } from "../seo/siteMeta";
 
 import {
   EMAILJS_PUBLIC_KEY,
@@ -52,6 +54,18 @@ function Services() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black px-4 py-10">
+      <Seo
+        path="/services"
+        title="Services — Hire a Freelance MERN/React Developer"
+        description="Hire a freelance MERN/React developer for web apps, bug fixes, payments, and API integrations. Share your requirement and get next steps."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "ProfessionalService",
+          name: `${SITE_NAME} — Freelance Services`,
+          url: toAbsoluteUrl("/services"),
+          serviceType: ["Web development", "React development", "MERN stack"],
+        }}
+      />
       <div className="max-w-5xl mx-auto">
         <div className="flex items-start justify-between gap-4 mb-8">
           <div>

@@ -373,6 +373,7 @@ function Notes() {
                       <img
                         src={note.previewImageUrl}
                         alt={`${note.title} first page preview`}
+                        loading="lazy"
                         className="w-full h-56 object-cover"
                       />
                       <span className="absolute top-3 left-3 bg-black/80 text-white text-xs px-3 py-1 rounded-full">

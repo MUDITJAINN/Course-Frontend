@@ -232,6 +232,7 @@ function Courses() {
                       <img
                         src={course.image?.url}
                         alt={course.title}
+                        loading="lazy"
                         className="rounded mb-4"
                       />
                       <p className="text-gray-600 mb-4">
@@ -307,6 +308,7 @@ function Courses() {
                         <img
                           src={course.image?.url}
                           alt={course.title}
+                          loading="lazy"
                           className="rounded mb-4"
                         />
                         <p className="text-gray-600 mb-4">

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /login
+Disallow: /signup
+Disallow: /settings
+Disallow: /purchases
+Disallow: /favorites/
+Disallow: /buy/
+
+Sitemap: https://programmingwithmudit.com/sitemap.xml
+

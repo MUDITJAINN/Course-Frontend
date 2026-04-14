@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BACKEND_URL } from "../utils/utils";
 import { COURSES_COMING_SOON } from "../config/comingSoon";
+import Seo from "../seo/Seo";
 
 function Buy() {
   const { courseId } = useParams();
@@ -127,6 +128,16 @@ function Buy() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <Seo
+        path={`/buy/${encodeURIComponent(courseId || "")}`}
+        title={course?.title ? `Buy ${course.title} — Programming With Mudit` : "Buy Course — Programming With Mudit"}
+        description={
+          course?.description
+            ? String(course.description).slice(0, 155)
+            : "Purchase a course and access it anytime from your account."
+        }
+        noindex
+      />
       <div className="max-w-lg mx-auto bg-white rounded-xl shadow-md overflow-hidden">
         <img
           src={course.image?.url}
