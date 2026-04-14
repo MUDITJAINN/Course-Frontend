@@ -709,7 +709,7 @@ function Home() {
               <ul className="space-y-2 text-gray-400 text-center md:text-left">
                 <li>
                   <Link to="/about" className="hover:text-white duration-300">
-                    Vision · Mission · FAQ
+                    About Us
                   </Link>
                 </li>
                 <li>
