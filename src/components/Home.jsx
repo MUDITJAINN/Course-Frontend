@@ -791,7 +791,7 @@ function Home() {
                 </li>
                 <li>
                   <a
-                    href={"http://www.inkedin.com/in/mudit-jain-b6b5b7404/"}
+                    href={"http://www.linkedin.com/in/mudit-jain-b6b5b7404/"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-white duration-300"
