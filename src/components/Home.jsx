@@ -791,7 +791,7 @@ function Home() {
                 </li>
                 <li>
                   <a
-                    href={LINKEDIN_URL}
+                    href={"http://www.inkedin.com/in/mudit-jain-b6b5b7404/"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-white duration-300"
@@ -801,7 +801,7 @@ function Home() {
                 </li>
                 <li>
                   <a
-                    href={DEVTO_URL}
+                    href={"https://dev.to/programmingwithmudit"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-white duration-300"
@@ -811,7 +811,7 @@ function Home() {
                 </li>
                 <li>
                   <a
-                    href={MEDIUM_URL}
+                    href={"http://medium.com/@programmingwithmudit"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-white duration-300"
