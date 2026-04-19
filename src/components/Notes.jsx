@@ -359,7 +359,7 @@ function Notes() {
             <div className="grid gap-6 md:grid-cols-2">
               {filteredStoreNotes.length === 0 ? (
                 <p className="text-gray-500 col-span-full text-center py-8">
-                  {notes.length === 0 ? "No notes published yet." : "No notes match your search."}
+                  {notes.length === 0 ? "Loading..." : "No notes match your search."}
                 </p>
               ) : (
               filteredStoreNotes.map((note) => {
