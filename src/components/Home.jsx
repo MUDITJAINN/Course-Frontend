@@ -325,7 +325,7 @@ function Home() {
               </li>
             ))}
           </ul>
-          <div className="text-center mt-10">
+          {/* <div className="text-center mt-10">
             <a
               href={PORTFOLIO_URL}
               target="_blank"
@@ -334,7 +334,7 @@ function Home() {
             >
               More about the instructor — portfolio &amp; work
             </a>
-          </div>
+          </div> */}
         </section>
 
         {/* Demo */}
@@ -678,16 +678,16 @@ function Home() {
         {/* Footer */}
         <footer>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-            <div className="flex flex-col items-center md:items-start">
+           {/*s <div className="flex flex-col items-center md:items-start">
               <div className="flex items-center space-x-2">
                 <img src={logo} alt="" className="w-10 h-10 rounded-full" />
                 <h2 className="text-xl text-orange-500 font-bold font-poppins">
                   Programming With Mudit
                 </h2>
               </div>
-              <div className="mt-3 ml-2 md:ml-8">
-                <p className="mb-2 text-gray-400">Follow us</p>
-                <div className="flex flex-wrap gap-3 md:gap-4">
+               <div className="mt-3 ml-2 md:ml-8">
+                <p className="mb-2 text-gray-400">Follow us</p> 
+                 <div className="flex flex-wrap gap-3 md:gap-4">
                   <a
                     href={TELEGRAM_URL}
                     target="_blank"
@@ -820,7 +820,7 @@ function Home() {
                   </a>
                 </li>
               </ul>
-            </div>
+            </div> */}
 
             <div className="flex flex-col items-center md:items-start">
               <h3 className="text-lg font-semibold mb-4 font-poppins">Explore More</h3>
