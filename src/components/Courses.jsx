@@ -176,9 +176,10 @@ function Courses() {
         {COURSES_COMING_SOON && activeView === "store" && (
           <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-yellow-900">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <p className="font-semibold">Coming soon</p>
+              <p className="font-semibold">Catalog is expanding</p>
               <p className="text-sm">
-                Courses are under development right now. Purchasing will be enabled later.
+                New courses are being added. You can still browse titles/descriptions and use the blog + notes
+                while the catalog grows.
               </p>
             </div>
           </div>
@@ -275,9 +276,33 @@ function Courses() {
               {loading ? (
                 <p className="text-center text-gray-500">Loading...</p>
               ) : courses.length === 0 ? (
-                <p className="text-center text-gray-500">
-                  No course posted yet by admin
-                </p>
+                <div className="max-w-3xl mx-auto text-center">
+                  <p className="text-gray-700 font-semibold">No courses are published yet.</p>
+                  <p className="text-gray-600 mt-2 leading-relaxed">
+                    While the course catalog is being built, you can still learn from the blog and download
+                    structured notes (with previews) on the Notes page.
+                  </p>
+                  <div className="mt-5 flex flex-wrap justify-center gap-3">
+                    <Link
+                      to="/blog"
+                      className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800"
+                    >
+                      Read the blog
+                    </Link>
+                    <Link
+                      to="/notes"
+                      className="bg-white border border-gray-200 text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50"
+                    >
+                      Browse notes
+                    </Link>
+                    <Link
+                      to="/contact"
+                      className="bg-white border border-gray-200 text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-50"
+                    >
+                      Contact support
+                    </Link>
+                  </div>
+                </div>
               ) : filteredCourses.length === 0 ? (
                 <p className="text-center text-gray-500">No courses match your search.</p>
               ) : (

@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import Seo from "../seo/Seo";
 import { getPostBySlug } from "../blog/posts";
 import { SITE_NAME, toAbsoluteUrl } from "../seo/siteMeta";
+import SiteFooter from "./SiteFooter";
 
 function renderBlock(text, idx) {
   if (text.startsWith("## ")) {
@@ -56,7 +57,7 @@ export default function BlogPost() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-gray-50">
       <Seo
         path={`/blog/${post.slug}`}
         title={`${post.title} — Programming With Mudit`}
@@ -73,7 +74,8 @@ export default function BlogPost() {
         }}
       />
 
-      <div className="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl p-6 sm:p-10 shadow-sm">
+      <div className="py-10 px-4">
+        <div className="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl p-6 sm:p-10 shadow-sm">
         <p className="text-xs text-gray-500">
           {post.category} • {post.date}
         </p>
@@ -95,6 +97,8 @@ export default function BlogPost() {
           </Link>
         </div>
       </div>
+      </div>
+      <SiteFooter />
     </div>
   );
 }

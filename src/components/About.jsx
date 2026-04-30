@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
+import SiteFooter from "./SiteFooter";
 
 const faqs = [
   {
@@ -33,8 +34,9 @@ function About() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-10">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="px-4 py-10">
+        <div className="max-w-5xl mx-auto">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">About</h1>
@@ -132,7 +134,9 @@ function About() {
             Refund & Cancellation
           </Link>
         </div>
+        </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

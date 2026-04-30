@@ -164,10 +164,31 @@ function Buy() {
               <>
                 {COURSES_COMING_SOON ? (
                   <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-yellow-900">
-                    <p className="font-semibold">Coming soon</p>
+                    <p className="font-semibold">Purchasing is temporarily unavailable</p>
                     <p className="text-sm mt-1">
-                      This course is under development. Purchasing will be enabled later.
+                      This listing is visible for preview, but checkout is disabled while the course catalog
+                      is being finalized.
                     </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Link
+                        to="/notes"
+                        className="inline-flex items-center bg-white border border-yellow-200 text-yellow-900 px-3 py-1.5 rounded-md hover:bg-yellow-100 text-sm"
+                      >
+                        Browse notes
+                      </Link>
+                      <Link
+                        to="/blog"
+                        className="inline-flex items-center bg-white border border-yellow-200 text-yellow-900 px-3 py-1.5 rounded-md hover:bg-yellow-100 text-sm"
+                      >
+                        Read blog
+                      </Link>
+                      <Link
+                        to="/contact"
+                        className="inline-flex items-center bg-white border border-yellow-200 text-yellow-900 px-3 py-1.5 rounded-md hover:bg-yellow-100 text-sm"
+                      >
+                        Contact
+                      </Link>
+                    </div>
                   </div>
                 ) : (
                   <button

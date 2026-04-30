@@ -1,10 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import SiteFooter from "./SiteFooter";
 
 function MockInterviews() {
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-10">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="px-4 py-10">
+        <div className="max-w-5xl mx-auto">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Mock Interviews</h1>
@@ -44,7 +46,38 @@ function MockInterviews() {
             </div>
           </div>
         </div>
+
+        <section className="mt-8 bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-gray-900">Common interview areas covered</h2>
+          <div className="mt-4 grid md:grid-cols-3 gap-4 text-gray-700">
+            <div className="rounded-xl border border-gray-100 p-4">
+              <p className="font-semibold text-gray-900">DSA</p>
+              <p className="text-sm mt-1 leading-relaxed">
+                Arrays/strings, hashing, stacks/queues, recursion, trees, graphs, and patterns like two
+                pointers + sliding window.
+              </p>
+            </div>
+            <div className="rounded-xl border border-gray-100 p-4">
+              <p className="font-semibold text-gray-900">MERN / Backend</p>
+              <p className="text-sm mt-1 leading-relaxed">
+                REST APIs, auth, database modeling, performance basics, and how you structure real projects.
+              </p>
+            </div>
+            <div className="rounded-xl border border-gray-100 p-4">
+              <p className="font-semibold text-gray-900">Project discussion</p>
+              <p className="text-sm mt-1 leading-relaxed">
+                “Why this design?”, “How did you deploy?”, “How do you handle errors?”, and trade-offs you
+                made.
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600 mt-4">
+            If you share your target companies/role beforehand, the mock can be aligned to that bar.
+          </p>
+        </section>
+        </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

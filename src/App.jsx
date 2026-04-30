@@ -23,6 +23,7 @@ const Tips = lazy(() => import("./components/Tips"));
 const CodingHacks = lazy(() => import("./components/CodingHacks"));
 const Blog = lazy(() => import("./components/Blog"));
 const BlogPost = lazy(() => import("./components/BlogPost"));
+const Contact = lazy(() => import("./components/Contact"));
 function App() {
   return (
     <div>
@@ -190,6 +191,19 @@ function App() {
                   description="About Programming With Mudit: teaching, content, and learning resources."
                 />
                 <About />
+              </>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <>
+                <Seo
+                  path="/contact"
+                  title="Contact — Programming With Mudit"
+                  description="Contact Programming With Mudit for support, course/notes questions, or freelance services."
+                />
+                <Contact />
               </>
             }
           />

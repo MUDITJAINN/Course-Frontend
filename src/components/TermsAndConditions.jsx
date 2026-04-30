@@ -1,16 +1,19 @@
 import React from 'react';
+import SiteFooter from "./SiteFooter";
 
 const TermsAndConditions = () => {
   return (
-    <div className="max-w-4xl mx-auto p-6 text-gray-800">
-      <h1 className="text-3xl font-bold mb-4">Terms & Conditions</h1>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto p-6 text-gray-800">
+        <h1 className="text-3xl font-bold mb-4">Terms & Conditions</h1>
 
       <p className="mb-4">
-        Last updated: June 18, 2025
+        Last updated: April 29, 2026
       </p>
 
       <p className="mb-4">
-        Welcome to MUDIT JAIN! The terms “we”, “us” and “our” refer to MUDIT JAIN. MUDIT JAIN operates this website, including all related information, content, features, tools, products and services to provide you with a curated shopping experience (“Services”). Powered by React.
+        Welcome to <strong>Programming With Mudit</strong>. By using this website and purchasing any digital
+        products (courses/notes), you agree to these Terms.
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">1. Access and Account</h2>
@@ -20,7 +23,8 @@ const TermsAndConditions = () => {
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">2. Our Products</h2>
       <p className="mb-4">
-        Product visuals and descriptions are provided to the best of our ability but may vary due to screen settings. We may discontinue or limit products anytime.
+        Digital products may include videos, PDFs, notes, downloads, and other learning materials. We may
+        update products over time and may discontinue listings at our discretion.
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">3. Orders</h2>
@@ -35,7 +39,8 @@ const TermsAndConditions = () => {
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">5. Shipping and Delivery</h2>
       <p className="mb-4">
-        Delivery times are estimates only. We are not responsible for delays after handing off to the carrier.
+        Products are digital; access is typically granted after successful payment verification. If access
+        fails, contact support.
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">6. Intellectual Property</h2>
@@ -53,17 +58,12 @@ const TermsAndConditions = () => {
         Links to other websites are provided for convenience. We are not responsible for their content or data practices.
       </p>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">9. Relationship with React</h2>
+      <h2 className="text-2xl font-semibold mt-6 mb-2">9. Privacy Policy</h2>
       <p className="mb-4">
-        MUDIT JAIN is powered by React. Sales are between you and MUDIT JAIN. React is not liable for any claims regarding purchases.
+        All personal information is governed by our Privacy Policy.
       </p>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">10. Privacy Policy</h2>
-      <p className="mb-4">
-        All personal information is governed by our Privacy Policy and that of React where applicable.
-      </p>
-
-      <h2 className="text-2xl font-semibold mt-6 mb-2">11. Feedback</h2>
+      <h2 className="text-2xl font-semibold mt-6 mb-2">10. Feedback</h2>
       <p className="mb-4">
         Feedback you provide grants us a royalty-free, global license to use it. You confirm you own the rights to the feedback.
       </p>
@@ -131,9 +131,13 @@ const TermsAndConditions = () => {
       <h2 className="text-2xl font-semibold mt-6 mb-2">24. Contact Information</h2>
       <p className="mb-4">
         For any questions, contact us at:<br />
-        <strong>Phone:</strong> 9149099945<br />
-        <strong>Email:</strong> mudit@gmail.com
+        <strong>Email:</strong>{" "}
+        <a className="text-blue-600 hover:underline" href="mailto:jainmuditt@gmail.com">
+          jainmuditt@gmail.com
+        </a>
       </p>
+      </div>
+      <SiteFooter />
     </div>
   );
 };

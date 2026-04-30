@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Seo from "../seo/Seo";
 import { BLOG_POSTS } from "../blog/posts";
 import { SITE_NAME, toAbsoluteUrl } from "../seo/siteMeta";
+import SiteFooter from "./SiteFooter";
 
 export default function Blog() {
   const [q, setQ] = useState("");
@@ -17,7 +18,7 @@ export default function Blog() {
   }, [q]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-gray-50">
       <Seo
         path="/blog"
         title="Blog — MERN, React, Freelancing | Programming With Mudit"
@@ -37,12 +38,13 @@ export default function Blog() {
         }}
       />
 
-      <div className="max-w-5xl mx-auto">
+      <div className="py-10 px-4">
+        <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Blog</h1>
             <p className="text-gray-600 mt-1">
-              Tutorials, problem solving, and money keywords (freelancing).
+              Tutorials, problem solving, and practical freelancing insights.
             </p>
           </div>
           <Link to="/" className="text-blue-600 hover:underline">
@@ -97,7 +99,9 @@ export default function Blog() {
             </article>
           ))}
         </div>
+        </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }
