@@ -9,5 +9,5 @@ Disallow: /purchases
 Disallow: /favorites/
 Disallow: /buy/
 
-Sitemap: https://programmingwithmudit.com/sitemap.xml
+Sitemap: https://www.programmingwithmudit.in/sitemap.xml
 
